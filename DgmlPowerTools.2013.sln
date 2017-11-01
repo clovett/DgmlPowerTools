@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30304.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSystemProvider", "FileSystemProvider\FileSystemProvider.csproj", "{30DBE28C-4556-454D-B947-CE58A04EBD0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDiff.2013", "GraphDiff\GraphDiff.2013.csproj", "{CD38C06C-CA6B-49C8-9038-81F718E3A230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlImage.2013", "DgmlImage\DgmlImage.2013.csproj", "{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlPowerTools.2013", "DgmlPowerTools2013\DgmlPowerTools.2013.csproj", "{D73F472B-51CB-41DA-B7E9-BE518F9386C2}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 5
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://lovettsoftware.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = FileSystemProvider\\FileSystemProvider.csproj
+		SccProjectName1 = FileSystemProvider
+		SccLocalPath1 = FileSystemProvider
+		SccProjectUniqueName2 = GraphDiff\\GraphDiff.2013.csproj
+		SccProjectName2 = GraphDiff
+		SccLocalPath2 = GraphDiff
+		SccProjectUniqueName3 = DgmlImage\\DgmlImage.2013.csproj
+		SccProjectName3 = DgmlImage
+		SccLocalPath3 = DgmlImage
+		SccProjectUniqueName4 = DgmlPowerTools2013\\DgmlPowerTools.2013.csproj
+		SccProjectName4 = DgmlPowerTools2013
+		SccLocalPath4 = DgmlPowerTools2013
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30DBE28C-4556-454D-B947-CE58A04EBD0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30DBE28C-4556-454D-B947-CE58A04EBD0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30DBE28C-4556-454D-B947-CE58A04EBD0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{30DBE28C-4556-454D-B947-CE58A04EBD0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30DBE28C-4556-454D-B947-CE58A04EBD0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30DBE28C-4556-454D-B947-CE58A04EBD0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|x86.ActiveCfg = Release|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|x86.ActiveCfg = Release|Any CPU
+		{D73F472B-51CB-41DA-B7E9-BE518F9386C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D73F472B-51CB-41DA-B7E9-BE518F9386C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D73F472B-51CB-41DA-B7E9-BE518F9386C2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D73F472B-51CB-41DA-B7E9-BE518F9386C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D73F472B-51CB-41DA-B7E9-BE518F9386C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D73F472B-51CB-41DA-B7E9-BE518F9386C2}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

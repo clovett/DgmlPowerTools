@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDiff.2015", "GraphDiff\GraphDiff.2015.csproj", "{CD38C06C-CA6B-49C8-9038-81F718E3A230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlImage.2015", "DgmlImage\DgmlImage.2015.csproj", "{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlPowerTools.2015", "DgmlPowerTools.2015\DgmlPowerTools.2015.csproj", "{4DF317E2-7B71-4BAC-AF5D-CDC736928320}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|x86.ActiveCfg = Release|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Debug|x86.Build.0 = Debug|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DF317E2-7B71-4BAC-AF5D-CDC736928320}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://lovettsoftware.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = GraphDiff\\GraphDiff.2015.csproj
+		SccProjectName1 = GraphDiff
+		SccLocalPath1 = GraphDiff
+		SccProjectUniqueName2 = DgmlImage\\DgmlImage.2015.csproj
+		SccProjectName2 = DgmlImage
+		SccLocalPath2 = DgmlImage
+		SccProjectUniqueName3 = DgmlPowerTools.2015\\DgmlPowerTools.2015.csproj
+		SccProjectName3 = DgmlPowerTools.2015
+		SccLocalPath3 = DgmlPowerTools.2015
+	EndGlobalSection
+EndGlobal

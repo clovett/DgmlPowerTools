@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="360c28fa-e40e-4a30-9edf-f29a1f349739" Version="1.2" Language="en-US" Publisher="Chris Lovett" />
+    <DisplayName>DgmlPowerTools</DisplayName>
+    <Description xml:space="preserve">DGML Power Tools is a VSIX package for Visual Studio 2012 that adds a bunch of handy new DGML related features, including export to SVG, Drag/Drop of images, Graph Diff, and filtering.  It also includes a File System provider for the Architecture Explorer.
+</Description>
+    <MoreInfo>http://www.lovettsoftware.com</MoreInfo>
+    <License>License.txt</License>
+    <ReleaseNotes>ReleaseNotes.html</ReleaseNotes>
+    <Icon>Resources\PackageIcon.png</Icon>
+    <PreviewImage>resources\Package.png</PreviewImage>
+    <Tags>DGML</Tags>
+  </Metadata>
+  <Installation InstalledByMsi="false">
+    <InstallationTarget Id="Microsoft.VisualStudio.Pro" Version="11.0" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="4.5" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.11.0" DisplayName="Visual Studio MPF 11.0" d:Source="Installed" Version="11.0" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="FileSystemProvider" Path="|FileSystemProvider|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
+  </Assets>
+</PackageManifest>

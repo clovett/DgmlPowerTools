@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="LovettSoftware.DgmlPowerTools.FilterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:LovettSoftware.DgmlPowerTools"
+             xmlns:platformUI="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0"
+             Background="{DynamicResource VsBrush.Window}"
+             Foreground="{DynamicResource VsBrush.WindowText}"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Name="MyToolWindow">
+    <UserControl.Resources>
+        <local:PlaceholderForegroundConverter x:Key="PlaceholderForegroundConverter"/>
+        <DataTemplate x:Key="GroupItemTemplate">
+            <StackPanel Orientation="Vertical">
+                <local:EditableTextBlock Label="{Binding Label, Mode=TwoWay}" FontSize="14" FontWeight="Bold"
+                                         Foreground="{Binding Path=Label, Converter={StaticResource PlaceholderForegroundConverter}}"
+                                         KeyDown="OnLabelKeyDown"  Margin="0,0,0,4"/>
+                <local:EditableTextBlock Label="{Binding Expression, Mode=TwoWay}"  
+                                         Foreground="{Binding Path=Label, Converter={StaticResource PlaceholderForegroundConverter}}"
+                                         KeyDown="OnExpressionKeyDown" Margin="0,0,0,4"/>
+            </StackPanel>
+        </DataTemplate>
+        <Style x:Key="CompactListStyle" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="1"/>
+        </Style>
+    </UserControl.Resources>
+    <DockPanel>
+
+        <Border Padding="2"  DockPanel.Dock="Top"  Background="{DynamicResource {x:Static platformUI:EnvironmentColors.CommandBarGradientBeginBrushKey}}" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <local:ToolbarButton x:Name="ApplyGroupsButton" Click="OnApplyGroups" ToolTip="Apply grouping" IconUri="Resources/ApplyGroups.png"/>
+                <local:ToolbarButton x:Name="RemoveGroupButton" Click="OnRemoveGroups" ToolTip="Remove groups" Grid.Column="1" IconUri="Resources/RemoveGroups.png"/>
+                <local:ToolbarButton x:Name="ClearButton" Click="OnClearClick" ToolTip="Clear list" Grid.Column="2" IconUri="Resources/Clear.png"/>
+            </Grid>
+        </Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>               
+            </Grid>
+            <ListView x:Name="FilterList" Grid.Row="1" ItemTemplate="{StaticResource GroupItemTemplate}" Padding="0"
+                      ItemContainerStyle="{StaticResource CompactListStyle}" Focusable="True"
+                      KeyDown="OnListKeyDown">
+
+            </ListView>
+        </Grid>
+    </DockPanel>
+</UserControl>

@@ -1,0 +1,58 @@
+﻿<Button x:Class="LovettSoftware.DgmlPowerTools.ToolbarButton"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"       
+             xmlns:local="clr-namespace:LovettSoftware.DgmlPowerTools"
+             xmlns:platformUI="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="20  " d:DesignWidth="80">
+    <Button.Resources>
+        <local:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter"/>
+        <imaging:ThemedImageConverter x:Key="ThemedImageConverter"/>
+
+    </Button.Resources>
+    <Button.Template>
+        <ControlTemplate TargetType="{x:Type local:ToolbarButton}">
+            <Grid x:Name="border">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="Icon" Source="{TemplateBinding Property=Icon}" Width="16" Height="16" Margin="3,2,3,2"/>
+                <TextBlock x:Name="Label" Text="{TemplateBinding Property=Caption}" VerticalAlignment="Center" Grid.Column="1"
+                           Visibility="{TemplateBinding Property=Caption, Converter={StaticResource EmptyStringToVisibilityConverter}}"/>
+            </Grid>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="UIElement.IsMouseOver">
+                    <Setter Property="Background" TargetName="border"
+                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.CommandBarMouseOverBackgroundBeginBrushKey}}">
+                    </Setter>
+                    <Trigger.Value>
+                        <s:Boolean>True</s:Boolean>
+                    </Trigger.Value>
+                </Trigger>
+                <Trigger Property="ButtonBase.IsPressed">
+                    <Setter Property="Background" TargetName="border"
+                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.CommandBarMouseDownBackgroundBeginBrushKey}}">
+                    </Setter>
+                    <Trigger.Value>
+                        <s:Boolean>True</s:Boolean>
+                    </Trigger.Value>
+                </Trigger>
+                <Trigger Property="UIElement.IsEnabled">
+                    <Setter Property="TextElement.Foreground" TargetName="Label"
+                            Value="{DynamicResource {x:Static platformUI:EnvironmentColors.CommandBarTextInactiveBrushKey}}">
+                    </Setter>
+                    <Trigger.Value>
+                        <s:Boolean>False</s:Boolean>
+                    </Trigger.Value>
+                </Trigger>
+            </ControlTemplate.Triggers>
+
+        </ControlTemplate>
+    </Button.Template>
+</Button>
