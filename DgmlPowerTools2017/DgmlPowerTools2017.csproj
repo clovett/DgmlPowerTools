@@ -63,7 +63,6 @@
       <DependentUpon>EditableTextBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\EmptyStringToVisibilityConverter.cs" />
-    <Compile Include="Controls\PlaceholderForegroundConverter.cs" />
     <Compile Include="Controls\ToolbarButton.xaml.cs">
       <DependentUpon>ToolbarButton.xaml</DependentUpon>
     </Compile>
@@ -117,11 +116,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\ApplyGroups.png" />
-    <Content Include="Resources\Clear.png" />
-    <Content Include="Resources\Images.png" />
-    <Content Include="Resources\plus.png" />
-    <Content Include="Resources\RemoveGroups.png" />
+    <Resource Include="Resources\ApplyGroups.png" />
+    <Resource Include="Resources\Clear.png" />
+    <Resource Include="Resources\Images.png" />
+    <Resource Include="Resources\RemoveGroups.png" />
+    <Resource Include="Resources\More.png" />
     <Content Include="Resources\VSPackage.ico" />
     <Content Include="stylesheet.css" />
     <VSCTCompile Include="VSPackage.vsct">

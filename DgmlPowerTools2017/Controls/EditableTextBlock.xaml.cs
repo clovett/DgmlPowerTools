@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -12,11 +13,18 @@ namespace LovettSoftware.DgmlPowerTools
 {
     public sealed partial class EditableTextBlock : UserControl
     {
+        Brush defaultForeground;
+
         public EditableTextBlock()
         {
             this.InitializeComponent();
+            this.Loaded += OnLoaded;
         }
 
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            this.defaultForeground = this.Foreground; // save the foreground brush.
+        }
 
         public string Label
         {
@@ -39,6 +47,14 @@ namespace LovettSoftware.DgmlPowerTools
             if (LabelChanged != null)
             {
                 LabelChanged(this, EventArgs.Empty);
+            }
+            if (this.Label.StartsWith("<"))
+            {
+                this.Foreground = Brushes.Gray;
+            }
+            else if (this.defaultForeground != null)
+            {
+                this.Foreground = this.defaultForeground;
             }
         }
 
