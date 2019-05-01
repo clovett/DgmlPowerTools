@@ -9,8 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Provides extensions for the DGML editor in Visual Studio")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lovett Software")]
-[assembly: AssemblyProduct("DgmlPowerTools 2017")]
-[assembly: AssemblyCopyright("Lovett Software 2017")]
+[assembly: AssemblyProduct("DgmlPowerTools 2019")]
+[assembly: AssemblyCopyright("Lovett Software 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
