@@ -79,7 +79,7 @@
     <Compile Include="Utilities\ShellHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\template.dgml" />
+    <EmbeddedResource Include="Resources\template.dgml" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

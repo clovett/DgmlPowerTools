@@ -2,13 +2,22 @@
 <DirectedGraph xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes />
   <Links />
+  <Properties>
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+  </Properties>
   <Styles>
-    <Style TargetType="Node" GroupLabel="GroupPartial" ValueLabel="True">
+    <Style TargetType="Node" GroupLabel="GroupPartialAdd" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Partial') and ChildrenAdded &gt; ChildrenRemoved " />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="GroupPartialRemove" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Partial')" />
-      <Setter Property="Background" Expression="Color.FromArgb(Math.Min(255, (ChildrenAdded + ChildrenRemoved)*255/200), 127 +  Math.Min(127, (ChildrenRemoved*127)/100), 127 + Math.Min(127, (ChildrenAdded*127/100)), 127)" />
-      <Setter Property="Stroke" Value="Navy" />
-      <Setter Property="StrokeThickness" Value="1" />
-      <Setter Property="Foreground" Value="Navy" />
+      <Setter Property="Background" Value="#FFCA4646" />
     </Style>
     <Style TargetType="Node" GroupLabel="NodeModified" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Modify')" />
@@ -16,26 +25,27 @@
     </Style>
     <Style TargetType="Link" GroupLabel="LinkModified" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Modify')" />
-      <Setter Property="Background" Value="#FF008000" />
+      <Setter Property="Foreground" Value="#FF008000" />
       <Setter Property="Stroke" Value="#FF008000" />
     </Style>
     <Style TargetType="Node" GroupLabel="NodeRemoved" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Remove')" />
-      <Setter Property="Background" Value="#FFFF0000" />
+      <Setter Property="Background" Value="#FFE96C6C" />
     </Style>
     <Style TargetType="Link" GroupLabel="LinkRemoved" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Remove')" />
-      <Setter Property="Background" Value="#FFFF0000" />
-      <Setter Property="Stroke" Value="#FFFF0000" />
+      <Setter Property="Stroke" Value="#FFA64F4F" />
+      <Setter Property="Foreground" Value="#FFA64F4F" />
     </Style>
     <Style TargetType="Node" GroupLabel="NodeAdded" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Add')" />
       <Setter Property="Background" Value="#FF00FF40" />
+      <Setter Property="Foreground" Value="#FF367031" />
     </Style>
     <Style TargetType="Link" GroupLabel="LinkAdded" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Add')" />
-      <Setter Property="Background" Value="#FF00FF40" />
-      <Setter Property="Stroke" Value="#FF00FF40" />
+      <Setter Property="Stroke" Value="#FF367031" />
+      <Setter Property="Foreground" Value="#FF3B834D" />
     </Style>
     <Style TargetType="Node" GroupLabel="NodeRemoved" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Equal')" />
