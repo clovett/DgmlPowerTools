@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Diagrams.Gestures;
 using Microsoft.VisualStudio.GraphModel;
 using Microsoft.VisualStudio.Progression;
+using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
@@ -559,6 +560,30 @@ namespace LovettSoftware.DgmlPowerTools
             oleMenuCommand.Checked = false;
         }
 
+        Graph GetUserDiffTemplate()
+        {
+            var manager = new Microsoft.VisualStudio.Shell.Settings.ShellSettingsManager(serviceProvider);
+            var documents = manager.GetApplicationDataFolder(ApplicationDataFolder.Documents);
+            string path = System.IO.Path.Combine(documents, "DgmlPowerTools");
+            if (!System.IO.Directory.Exists(path))
+            {
+                System.IO.Directory.CreateDirectory(path);
+            }
+            Graph result = null;
+            string template = System.IO.Path.Combine(path, "GraphDiffTemplate.dgml");
+            try
+            {
+                return Graph.Load(template, DgmlCommonSchema.Schema);
+            }
+            catch (Exception)
+            {
+                result = ShellHelpers.GetEmbeddedGraphResource("Resources.template.dgml");
+                result.Save(template);
+            }
+
+            return result;
+        }
+
         void CompareGraphs_InvokeHandler(object sender, EventArgs arguments)
         {
             Graph original = this.graphWindow.Graph;
@@ -580,8 +605,7 @@ namespace LovettSoftware.DgmlPowerTools
             try
             {
                 Graph target = Graph.Load(od.FileName, DgmlCommonSchema.Schema);
-                
-                Graph result = ShellHelpers.GetEmbeddedGraphResource("Resources.template.dgml");
+                Graph result = GetUserDiffTemplate();
 
                 GraphDiff diff = new GraphDiff();
                 string resultPath = diff.Compare(original, target, result);

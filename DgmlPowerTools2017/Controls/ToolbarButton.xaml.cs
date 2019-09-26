@@ -77,6 +77,7 @@ namespace LovettSoftware.DgmlPowerTools
                     <Binding Path="IsEnabled" RelativeSource="{RelativeSource TemplatedParent}"/>
                 </MultiBinding>
             </Image.Source>*/
+
             BitmapFrame src = BitmapFrame.Create(new Uri(GetResourceUri(IconUri)));
 
             object backgroundColor = GetValue(ImageThemingUtilities.ImageBackgroundColorProperty);
