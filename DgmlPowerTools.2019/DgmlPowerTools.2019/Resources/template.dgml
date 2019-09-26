@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes />
+  <Links />
+  <Styles>
+    <Style TargetType="Node" GroupLabel="GroupPartial" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Partial')" />
+      <Setter Property="Background" Expression="Color.FromArgb(Math.Min(255, (ChildrenAdded + ChildrenRemoved)*255/200), 127 +  Math.Min(127, (ChildrenRemoved*127)/100), 127 + Math.Min(127, (ChildrenAdded*127/100)), 127)" />
+      <Setter Property="Stroke" Value="Navy" />
+      <Setter Property="StrokeThickness" Value="1" />
+      <Setter Property="Foreground" Value="Navy" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="NodeModified" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Modify')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="LinkModified" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Modify')" />
+      <Setter Property="Background" Value="#FF008000" />
+      <Setter Property="Stroke" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="NodeRemoved" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Remove')" />
+      <Setter Property="Background" Value="#FFFF0000" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="LinkRemoved" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Remove')" />
+      <Setter Property="Background" Value="#FFFF0000" />
+      <Setter Property="Stroke" Value="#FFFF0000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="NodeAdded" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Add')" />
+      <Setter Property="Background" Value="#FF00FF40" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="LinkAdded" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Add')" />
+      <Setter Property="Background" Value="#FF00FF40" />
+      <Setter Property="Stroke" Value="#FF00FF40" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="NodeRemoved" ValueLabel="True">
+      <Condition Expression="HasCategory('DGMLDiff.Equal')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+  </Styles>
+</DirectedGraph>
