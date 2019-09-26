@@ -48,7 +48,7 @@ namespace LovettSoftware.DgmlPowerTools
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(FilterViewToolWindow))]
-    public sealed class VSPackage : AsyncPackage, IGraphDocumentNotify
+    public sealed class VSPackage : AsyncPackage, IGraphDocumentNotify, IVsPackageExtensionProvider
     {
 
         /// <summary>
@@ -67,16 +67,8 @@ namespace LovettSoftware.DgmlPowerTools
         {
             if (Instance == null)
             {
-                IOleComponentManager manager = Microsoft.VisualStudio.PlatformUI.OleComponentSupport.OleComponentManager.Instance;
-                Guid guid = typeof(SVsShell).GUID;
-                Guid iid = typeof(IVsShell).GUID;
-                IntPtr ptr;
-                manager.QueryService(ref guid, ref iid, out ptr);
-                IVsShell shell = Marshal.GetObjectForIUnknown(ptr) as IVsShell;
-                IVsPackage package = null;
-                Guid PackageToBeLoadedGuid = new Guid(GuidList.PackageGuidString);
-                shell.LoadPackage(ref PackageToBeLoadedGuid, out package);                
-                Marshal.Release(ptr);
+                var pkgGuid = new Guid(GuidList.PackageGuidString);
+                var result = Microsoft.VisualStudio.Shell.VsShellUtilities.TryGetPackageExtensionPoint<IVsPackageExtensionProvider, IVsPackageExtensionProvider>(pkgGuid, pkgGuid);
             }
         }
 
@@ -146,6 +138,11 @@ namespace LovettSoftware.DgmlPowerTools
             }
         }
 
-        #endregion 
+        public dynamic CreateExtensionInstance(ref Guid extensionPoint, ref Guid instance)
+        {
+            return null;
+        }
+
+        #endregion
     }
 }
