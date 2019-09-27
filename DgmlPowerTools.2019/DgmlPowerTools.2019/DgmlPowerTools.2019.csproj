@@ -169,6 +169,7 @@
     <Resource Include="Resources\Images.png" />
     <Resource Include="Resources\plus.png" />
     <Resource Include="Resources\RemoveGroups.png" />
+    <Resource Include="Resources\More.png" />
     <Content Include="Resources\VSPackage.ico" />
     <Content Include="stylesheet.css" />
     <VSCTCompile Include="VSPackage.vsct">
