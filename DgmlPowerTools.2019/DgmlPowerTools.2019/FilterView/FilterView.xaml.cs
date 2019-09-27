@@ -287,7 +287,7 @@ namespace LovettSoftware.DgmlPowerTools
             else if (e.Key == Key.Escape)
             {
                 editable.CommitEdit();
-                Dispatcher.BeginInvoke(new System.Action(() => { FilterList.Focus(); }));
+                Dispatcher.BeginInvoke(new System.Action(() => FilterList.Focus()));
                 e.Handled = true;
             }
         }

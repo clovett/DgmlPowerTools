@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.Diagrams.Gestures;
 using Microsoft.VisualStudio.GraphModel;
+using Microsoft.VisualStudio.GraphModel.Schemas;
 using Microsoft.VisualStudio.Progression;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -33,7 +34,12 @@ namespace LovettSoftware.DgmlPowerTools
             commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidCompareGraphs);
             DefineCommandHandler(new EventHandler(this.CompareGraphs_InvokeHandler), null,
                 new EventHandler(this.CompareGraphs_BeforeQueryStatus), commandId, null);
-            
+
+            // hide internals
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidHideInternals);
+            DefineCommandHandler(new EventHandler(this.HideInternals_InvokeHandler), null,
+                new EventHandler(this.HideInternals_BeforeQueryStatus), commandId, null);
+
             // cmdidSaveAsSvg
             commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidSaveAsSvg);
             DefineCommandHandler(new EventHandler(this.SaveAsSvg_InvokeHandler), null,
@@ -208,7 +214,7 @@ namespace LovettSoftware.DgmlPowerTools
         }
 
         private void FilterView_InvokeHandler(object sender, EventArgs e)
-        {
+        {            
             // Get the command being executed
             OleMenuCommand oleMenuCommand = sender as OleMenuCommand;
             if (oleMenuCommand == null)
@@ -555,7 +561,7 @@ namespace LovettSoftware.DgmlPowerTools
             // Set the settings
             oleMenuCommand.Supported = true;
             // Only enabled if we have a visible graph
-            oleMenuCommand.Enabled = !(control.IsSplashScreenVisible || control.IsLayoutProgressVisible || control.Diagram.IsLayoutPending);
+            oleMenuCommand.Enabled = !(control.IsSplashScreenVisible || control.IsLayoutProgressVisible);
             oleMenuCommand.Checked = false;
         }
 
@@ -579,7 +585,7 @@ namespace LovettSoftware.DgmlPowerTools
 
             try
             {
-                Graph target = Graph.Load(od.FileName, DgmlCommonSchema.Schema);
+                Graph target = Graph.Load(od.FileName, Microsoft.VisualStudio.Progression.DgmlCommonSchema.Schema);
                 
                 Graph result = ShellHelpers.GetEmbeddedGraphResource("Resources.template.dgml");
 
@@ -622,6 +628,83 @@ namespace LovettSoftware.DgmlPowerTools
             }
 
         }
+
+        private void HideInternals_BeforeQueryStatus(object sender, EventArgs arguments)
+        {
+            // Get the command being queried
+            OleMenuCommand oleMenuCommand = sender as OleMenuCommand;
+            if (oleMenuCommand == null)
+            {
+                return;
+            }
+
+            GraphControl control = GraphControl;
+
+            // Set the settings
+            oleMenuCommand.Supported = true;
+            // Only enabled if we have a visible graph
+            oleMenuCommand.Enabled = !(control.IsSplashScreenVisible || control.IsLayoutProgressVisible);
+            oleMenuCommand.Checked = false;
+        }
+
+        void HideInternals_InvokeHandler(object sender, EventArgs arguments)
+        {
+            Graph graph = this.graphWindow.Graph;
+            if (graph == null)
+            {
+                return;
+            }
+            HideInternals(graph);
+        }
+
+        void HideInternals(Graph graph)
+        {
+            object id = new object();
+            using (GraphTransactionScope scope = new UndoableGraphTransactionScope(id, "Hide Internals", UndoOption.Add))
+            {
+                foreach (var node in graph.Nodes)
+                {
+                    if (node.GetValue<bool>("CodeSchemaProperty_IsInternal") || node.GetValue<bool>("CodeSchemaProperty_IsPrivate"))
+                    {
+                        Hide(node, true);
+                    }
+                }
+                scope.Complete();
+            }
+        }
+
+        /// <summary>
+        /// Hide the given graph object and remember we have hidden it.
+        /// </summary>
+        /// <param name="graphObject"></param>
+        void Hide(GraphObject graphObject, bool hideGroup)
+        {
+            Graph owner = graphObject.Owner;
+            graphObject.Visibility = Visibility.Hidden;
+
+            GraphNode node = graphObject as GraphNode;
+            if (node != null && node.IsGroup && hideGroup)
+            {
+                GraphGroup g = owner.FindGroup(node);
+                if (g != null)
+                {
+                    HideChildren(g);
+                }
+            }
+        }
+
+        void HideChildren(GraphGroup g)
+        {
+            foreach (GraphNode n in g.ChildNodes)
+            {
+                Hide(n, true);
+            }
+            foreach (GraphGroup c in g.ChildGroups)
+            {
+                Hide(c.GroupNode, true);
+            }
+        }
+
 
         GraphObject FindResultObject(GraphObject source, Graph resultGraph)
         {

@@ -1,29 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <!--  This is the file that defines the actual layout and type of the commands.
+  <!--  This is the file that defines the actual layout and type of the commands.
         It is divided in different sections (e.g. command definition, command
         placement, ...), with each defining a specific set of properties.
         See the comment before each section for more details about how to
         use it. -->
 
-    <!--  The VSCT compiler (the tool that translates this file into the binary
+  <!--  The VSCT compiler (the tool that translates this file into the binary
         format that VisualStudio will consume) has the ability to run a preprocessor
         on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
         it is possible to define includes and macros with the same syntax used
         in C++ files. Using this ability of the compiler here, we include some files
         defining some of the constants that we will use inside the file. -->
 
-    <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
-    <Extern href="stdidcmd.h"/>
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h"/>
 
-    <!--This header contains the command ids for the menus provided by the shell. -->
-    <Extern href="vsshlids.h"/>
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h"/>
 
-    <!--The Commands section is where commands, menus, and menu groups are defined.
+  <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-    <Commands package="guidVSPackage">
-        <!-- Inside this section we have different sub-sections: one for the menus, another
+  <Commands package="guidVSPackage">
+    <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
     is a unique pair of guid and numeric identifier; the guid part of the identifier is usually
@@ -31,46 +31,46 @@
     group; your package should define its own command set in order to avoid collisions
     with command ids defined by other packages. -->
 
-        <Menus>
-            <Menu guid="guidDgmlPowerToolsCmdSet" id="menuID_NeighborhoodDistance" priority="0x0100" type="MenuControllerLatched">
-                <Parent guid="guidGraphPackageCmdSet" id="groupID_Neighborhood"/>
-                <Strings>
-                    <ButtonText>&amp;Neighborhood Mode</ButtonText>
-                    <CommandName>NeighborhoodMode</CommandName>
-                    <CanonicalName>NeighborhoodMode</CanonicalName>
-                    <LocCanonicalName>NeighborhoodMode</LocCanonicalName>
-                </Strings>
-            </Menu>
-        </Menus>
+    <Menus>
+      <Menu guid="guidDgmlPowerToolsCmdSet" id="menuID_NeighborhoodDistance" priority="0x0100" type="MenuControllerLatched">
+        <Parent guid="guidGraphPackageCmdSet" id="groupID_Neighborhood"/>
+        <Strings>
+          <ButtonText>&amp;Neighborhood Mode</ButtonText>
+          <CommandName>NeighborhoodMode</CommandName>
+          <CanonicalName>NeighborhoodMode</CanonicalName>
+          <LocCanonicalName>NeighborhoodMode</LocCanonicalName>
+        </Strings>
+      </Menu>
+    </Menus>
 
 
-        <!-- In this section you can define new menu groups. A menu group is a container for
+    <!-- In this section you can define new menu groups. A menu group is a container for
          other menus or buttons (commands); from a visual point of view you can see the
          group as the part of a menu contained between two lines. The parent of a group
          must be a menu. -->
-        <Groups>
-            <!-- after groupID_ContextMain and before groupID_Edit... -->
-            <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_GraphDiff" priority="0x0180">
-                <!--<Parent guid="guidGraphPackageCmdSet" id="groupID_ContextMain"/>-->
-                <Parent guid="guidGraphPackageCmdSet" id="menuID_Context" />
-            </Group>
+    <Groups>
+      <!-- after groupID_ContextMain and before groupID_Edit... -->
+      <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_GraphDiff" priority="0x0180">
+        <!--<Parent guid="guidGraphPackageCmdSet" id="groupID_ContextMain"/>-->
+        <Parent guid="guidGraphPackageCmdSet" id="menuID_Context" />
+      </Group>
 
-            <!-- Neighborhood distance submenu group -->
-            <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance" priority="0x0000">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="menuID_NeighborhoodDistance" />
-            </Group>
+      <!-- Neighborhood distance submenu group -->
+      <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance" priority="0x0000">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="menuID_NeighborhoodDistance" />
+      </Group>
 
-            <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistanceAll" priority="0x0010">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="menuID_NeighborhoodDistance" />
-            </Group>
+      <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistanceAll" priority="0x0010">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="menuID_NeighborhoodDistance" />
+      </Group>
 
-        </Groups>
+    </Groups>
 
-        <!--Buttons section. -->
-        <!--This section defines the elements the user can interact with, like a menu command or a button
+    <!--Buttons section. -->
+    <!--This section defines the elements the user can interact with, like a menu command or a button
         or combo box in a toolbar. -->
-        <Buttons>
-            <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
+    <Buttons>
+      <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
           The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
           the CommandFlag node.
           You can add more than one CommandFlag node e.g.:
@@ -78,241 +78,250 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
 
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidCompareGraph" priority="0x0100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_GraphDiff" />
-                <Icon guid="guidImages" id="bmpCompare" />
-                <Strings>
-                    <ButtonText>Compare with another graph...</ButtonText>
-                </Strings>
-            </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidCompareGraph" priority="0x0100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_GraphDiff" />
+        <Icon guid="guidImages" id="bmpCompare" />
+        <Strings>
+          <ButtonText>Compare with another graph...</ButtonText>
+        </Strings>
+      </Button>
 
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidSaveAsSvg" priority="0x0100" type="Button">
-                <Parent guid="guidGraphPackageCmdSet" id="groupID_Extras" />
-                <CommandFlag>DefaultInvisible</CommandFlag>
-                <CommandFlag>DynamicVisibility</CommandFlag>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <Strings>
-                    <ButtonText>Save As &amp;SVG...</ButtonText>
-                    <CanonicalName>SaveAsSvg</CanonicalName>
-                    <LocCanonicalName>SaveAsSvg</LocCanonicalName>
-                </Strings>
-            </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidHideInternals" priority="0x030" type="Button">
+        <Parent guid="guidGraphPackageCmdSet" id="groupID_HideSelection" />
+        <Strings>
+          <ButtonText>Hide Internals</ButtonText>
+        </Strings>
+      </Button>
 
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdIdGraph_Layout_NeighborhoodBrowseMode" priority="0x200" type="Button" >
-                <Annotation>
-                    <Documentation>
-                        This command turns on a mode where the graph document limits the degrees of separation from the selected node.
-                        Nodes within this limit are considered to be in the "neighborhood".  The actual number is defined by the
-                        Layout_NeighborhoodDistance_Combo.
-                    </Documentation>
-                </Annotation>
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance" />
-                <Icon guid="guidImages" id="bmpIndex_Layout_NeighborhoodBrowseMode"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>CommandWellOnly</CommandFlag>
-                <CommandFlag>IconAndText</CommandFlag>
-                <CommandFlag>FixMenuController</CommandFlag>
-                <CommandFlag>NoShowOnMenuController</CommandFlag>
-                <CommandFlag>NoKeyCustomize</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>Neighborhood Browse Mode</ButtonText>
-                    <MenuText>Neighborhood Browse Mode</MenuText>
-                    <CanonicalName>DirectedGraph.ToggleNeighborhoodBrowseMode</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.ToggleNeighborhoodBrowseMode</LocCanonicalName>
-                </Strings>
-            </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidSaveAsSvg" priority="0x0100" type="Button">
+        <Parent guid="guidGraphPackageCmdSet" id="groupID_Extras" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Save As &amp;SVG...</ButtonText>
+          <CanonicalName>SaveAsSvg</CanonicalName>
+          <LocCanonicalName>SaveAsSvg</LocCanonicalName>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdIdGraph_Layout_NeighborhoodBrowseMode" priority="0x200" type="Button" >
+        <Annotation>
+          <Documentation>
+            This command turns on a mode where the graph document limits the degrees of separation from the selected node.
+            Nodes within this limit are considered to be in the "neighborhood".  The actual number is defined by the
+            Layout_NeighborhoodDistance_Combo.
+          </Documentation>
+        </Annotation>
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance" />
+        <Icon guid="guidImages" id="bmpIndex_Layout_NeighborhoodBrowseMode"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <CommandFlag>IconAndText</CommandFlag>
+        <CommandFlag>FixMenuController</CommandFlag>
+        <CommandFlag>NoShowOnMenuController</CommandFlag>
+        <CommandFlag>NoKeyCustomize</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>Neighborhood Browse Mode</ButtonText>
+          <MenuText>Neighborhood Browse Mode</MenuText>
+          <CanonicalName>DirectedGraph.ToggleNeighborhoodBrowseMode</CanonicalName>
+          <LocCanonicalName>DirectedGraph.ToggleNeighborhoodBrowseMode</LocCanonicalName>
+        </Strings>
+      </Button>
 
 
-            <!-- Buttons for neighborhood distance combo drop down list -->
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance1" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;1 Link</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.1</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.1</LocCanonicalName>
-                </Strings>
-            </Button>
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance2" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;2 Links</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.2</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.2</LocCanonicalName>
-                </Strings>
-            </Button>
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance3" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;3 Links</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.3</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.3</LocCanonicalName>
-                </Strings>
-            </Button>
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance4" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;4 Links</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.4</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.4</LocCanonicalName>
-                </Strings>
-            </Button>
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance5" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;5 Links</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.5</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.5</LocCanonicalName>
-                </Strings>
-            </Button>
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance6" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;6 Links</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.6</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.6</LocCanonicalName>
-                </Strings>
-            </Button>
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance7" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;7 Links</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.7</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.7</LocCanonicalName>
-                </Strings>
-            </Button>
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistanceAll" priority="0x100" type="Button">
-                <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistanceAll"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>&amp;Off</ButtonText>
-                    <CanonicalName>DirectedGraph.NeighborhoodDistance.All</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.NeighborhoodDistance.All</LocCanonicalName>
-                </Strings>
-            </Button>
+      <!-- Buttons for neighborhood distance combo drop down list -->
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance1" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;1 Link</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.1</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.1</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance2" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;2 Links</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.2</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.2</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance3" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;3 Links</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.3</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.3</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance4" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;4 Links</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.4</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.4</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance5" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;5 Links</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.5</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.5</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance6" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;6 Links</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.6</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.6</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistance7" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;7 Links</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.7</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.7</LocCanonicalName>
+        </Strings>
+      </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidNeighborhoodDistanceAll" priority="0x100" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistanceAll"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>&amp;Off</ButtonText>
+          <CanonicalName>DirectedGraph.NeighborhoodDistance.All</CanonicalName>
+          <LocCanonicalName>DirectedGraph.NeighborhoodDistance.All</LocCanonicalName>
+        </Strings>
+      </Button>
 
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidButterflyMode" priority="0x210" type="Button">
-                <Annotation>
-                    <Documentation>
-                        Toggle neighborhood mode
-                    </Documentation>
-                </Annotation>
-                <Parent guid="guidGraphPackageCmdSet" id="groupID_Neighborhood"/>
-                <Icon guid="guidImages" id="bmpButterflyMode"/>
-                <CommandFlag>DefaultDisabled</CommandFlag>
-                <CommandFlag>RouteToDocs</CommandFlag>
-                <Strings>
-                    <ButtonText>Butterfly</ButtonText>
-                    <CanonicalName>DirectedGraph.Butterfly</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.Butterfly</LocCanonicalName>
-                </Strings>
-            </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidButterflyMode" priority="0x210" type="Button">
+        <Annotation>
+          <Documentation>
+            Toggle neighborhood mode
+          </Documentation>
+        </Annotation>
+        <Parent guid="guidGraphPackageCmdSet" id="groupID_Neighborhood"/>
+        <Icon guid="guidImages" id="bmpButterflyMode"/>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>RouteToDocs</CommandFlag>
+        <Strings>
+          <ButtonText>Butterfly</ButtonText>
+          <CanonicalName>DirectedGraph.Butterfly</CanonicalName>
+          <LocCanonicalName>DirectedGraph.Butterfly</LocCanonicalName>
+        </Strings>
+      </Button>
 
-            <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidDgmlFilterView" priority="0x0300" type="Button">
-                <Annotation>
-                    <Documentation>
-                        DGML Filter View
-                    </Documentation>
-                </Annotation>
-                <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
-                <Icon guid="guidImages" id="bmpFilter" />
-                <Strings>
-                    <ButtonText>DGML Filter View</ButtonText>
-                    <CanonicalName>DirectedGraph.FilterView</CanonicalName>
-                    <LocCanonicalName>DirectedGraph.FilterView</LocCanonicalName>
-                </Strings>
-            </Button>
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidDgmlFilterView" priority="0x0300" type="Button">
+        <Annotation>
+          <Documentation>
+            DGML Filter View
+          </Documentation>
+        </Annotation>
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
+        <Icon guid="guidImages" id="bmpFilter" />
+        <Strings>
+          <ButtonText>DGML Filter View</ButtonText>
+          <CanonicalName>DirectedGraph.FilterView</CanonicalName>
+          <LocCanonicalName>DirectedGraph.FilterView</LocCanonicalName>
+        </Strings>
+      </Button>
 
-        </Buttons>
+    </Buttons>
 
-        <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
-        <Bitmaps>
-            <!--  The bitmap id is defined in a way that is a little bit different from the others: 
+    <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
+    <Bitmaps>
+      <!--  The bitmap id is defined in a way that is a little bit different from the others: 
             the declaration starts with a guid for the bitmap strip, then there is the resource id of the 
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used 
             inside a button definition. An important aspect of this declaration is that the element id 
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-            <Bitmap guid="guidImages" href="Resources\Images.png" usedList="bmpIndex_Layout_NeighborhoodBrowseMode, bmpCompare, bmpFilter, bmpButterflyMode, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidImages" href="Resources\Images.png" usedList="bmpIndex_Layout_NeighborhoodBrowseMode, bmpCompare, bmpFilter, bmpButterflyMode, bmpPicArrows, bmpPicStrikethrough"/>
 
-        </Bitmaps>
-    </Commands>
+    </Bitmaps>
+  </Commands>
 
-    <CommandPlacements>
-        <CommandPlacement guid="guidDgmlPowerToolsCmdSet" id="cmdidSaveAsSvg" priority="0x0016"  >
-            <Parent guid="guidGraphPackageCmdSet" id="groupID_SaveAs" />
-        </CommandPlacement>
-        <CommandPlacement guid="guidDgmlPowerToolsCmdSet" id="cmdidDgmlFilterView" priority="0x0300"  >
-            <Parent guid="guidGraphPackageCmdSet" id="groupID_Neighborhood"/>
-        </CommandPlacement>
-    </CommandPlacements>
-    <Symbols>
-        <!-- these are from the progression package so we can hook into the graph document toolbar -->
-        <GuidSymbol name="guidGraphPackageCmdSet" value="{ADC1BC7B-958B-4548-9F9F-10FC49099825}">
-            <IDSymbol name="menuID_GraphDocumentToolbar" value="0x3010"/>
-            <IDSymbol name="groupID_Neighborhood"        value="0x1006"/>
-            <IDSymbol name="groupID_Extras"              value="0x1050"/>
-            <IDSymbol name="groupID_SaveAs"              value="0x1216"/>
-            <IDSymbol name="menuID_Context"   value="0x3100"/>
-        </GuidSymbol>
+  <CommandPlacements>
+    <CommandPlacement guid="guidDgmlPowerToolsCmdSet" id="cmdidSaveAsSvg" priority="0x0016"  >
+      <Parent guid="guidGraphPackageCmdSet" id="groupID_SaveAs" />
+    </CommandPlacement>
+    <CommandPlacement guid="guidDgmlPowerToolsCmdSet" id="cmdidDgmlFilterView" priority="0x0300"  >
+      <Parent guid="guidGraphPackageCmdSet" id="groupID_Neighborhood"/>
+    </CommandPlacement>
+  </CommandPlacements>
+  <Symbols>
+    <!-- these are from the progression package so we can hook into the graph document toolbar -->
+    <GuidSymbol name="guidGraphPackageCmdSet" value="{ADC1BC7B-958B-4548-9F9F-10FC49099825}">
+      <IDSymbol name="menuID_GraphDocumentToolbar" value="0x3010"/>
+      <IDSymbol name="groupID_Neighborhood"        value="0x1006"/>
+      <IDSymbol name="groupID_Extras"              value="0x1050"/>
+      <IDSymbol name="groupID_SaveAs"              value="0x1216"/>
+      <IDSymbol name="menuID_Context"              value="0x3100"/>
+      <IDSymbol name="groupID_HideSelection"       value="0x1027"/>
+    </GuidSymbol>
 
-        <!-- This is the package guid. -->
-        <GuidSymbol name="guidVSPackage" value="{2517bb47-303a-4633-a65e-86867c9e6bcb}" />
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidVSPackage" value="{2517bb47-303a-4633-a65e-86867c9e6bcb}" />
 
-        <!-- This is the guid used to group the menu commands together -->
-        <GuidSymbol name="guidDgmlPowerToolsCmdSet" value="{b6fdf30f-2021-4ac7-8749-8f55376673c6}">
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidDgmlPowerToolsCmdSet" value="{b6fdf30f-2021-4ac7-8749-8f55376673c6}">
 
-            <IDSymbol name="menuID_NeighborhoodDistance" value="0x3700"/>
+      <IDSymbol name="menuID_NeighborhoodDistance" value="0x3700"/>
+ 
+      <IDSymbol name="groupID_GraphDiff" value="0x1020" />
+      <IDSymbol name="groupID_NeighborhoodDistance"      value="0x1021"/>
+      <IDSymbol name="groupID_NeighborhoodDistanceAll"   value="0x1022"/>
 
-            <IDSymbol name="groupID_GraphDiff" value="0x1020" />
-            <IDSymbol name="groupID_NeighborhoodDistance"      value="0x1021"/>
-            <IDSymbol name="groupID_NeighborhoodDistanceAll"   value="0x1022"/>
+      <IDSymbol name="cmdidNeighborhoodMode" value="0x0100" />
+      <IDSymbol name="cmdidDgmlFilterView" value="0x0101" />
+      <IDSymbol name="cmdidSaveAsSvg" value="0x0102" />
+      <IDSymbol name="cmdidCompareGraph" value="0x0103" />
+      <IDSymbol name="cmdidHideInternals" value="0x0104" />      
 
-            <IDSymbol name="cmdidNeighborhoodMode" value="0x0100" />
-            <IDSymbol name="cmdidDgmlFilterView" value="0x0101" />
-            <IDSymbol name="cmdidSaveAsSvg" value="0x0102" />
-            <IDSymbol name="cmdidCompareGraph" value="0x0103" />
+      <IDSymbol name="cmdIdGraph_Layout_NeighborhoodBrowseMode"              value="0x2015"/>
+      <IDSymbol name="cmdIdGraph_Layout_NeighborhoodDistance_Combo"  value="0x2016"/>
+      <IDSymbol name="cmdidGraph_Layout_NeighborhoodDistance_ComboGetList"  value="0x2017"/>
 
-            <IDSymbol name="cmdIdGraph_Layout_NeighborhoodBrowseMode"              value="0x2015"/>
-            <IDSymbol name="cmdIdGraph_Layout_NeighborhoodDistance_Combo"  value="0x2016"/>
-            <IDSymbol name="cmdidGraph_Layout_NeighborhoodDistance_ComboGetList"  value="0x2017"/>
+      <IDSymbol name="cmdidNeighborhoodDistance1"    value="0x2450"/>
+      <IDSymbol name="cmdidNeighborhoodDistance2"    value="0x2451"/>
+      <IDSymbol name="cmdidNeighborhoodDistance3"    value="0x2452"/>
+      <IDSymbol name="cmdidNeighborhoodDistance4"    value="0x2453"/>
+      <IDSymbol name="cmdidNeighborhoodDistance5"    value="0x2454"/>
+      <IDSymbol name="cmdidNeighborhoodDistance6"    value="0x2455"/>
+      <IDSymbol name="cmdidNeighborhoodDistance7"    value="0x2456"/>
+      <IDSymbol name="cmdidNeighborhoodDistanceAll"  value="0x2457"/>
 
-            <IDSymbol name="cmdidNeighborhoodDistance1"    value="0x2450"/>
-            <IDSymbol name="cmdidNeighborhoodDistance2"    value="0x2451"/>
-            <IDSymbol name="cmdidNeighborhoodDistance3"    value="0x2452"/>
-            <IDSymbol name="cmdidNeighborhoodDistance4"    value="0x2453"/>
-            <IDSymbol name="cmdidNeighborhoodDistance5"    value="0x2454"/>
-            <IDSymbol name="cmdidNeighborhoodDistance6"    value="0x2455"/>
-            <IDSymbol name="cmdidNeighborhoodDistance7"    value="0x2456"/>
-            <IDSymbol name="cmdidNeighborhoodDistanceAll"  value="0x2457"/>
-
-            <IDSymbol name="cmdidButterflyMode"            value="0x2460"/>
-
-
-            <IDSymbol name="cmdidNeighborhoodBrowseMode" value="0x0100" />
-        </GuidSymbol>
+      <IDSymbol name="cmdidButterflyMode"            value="0x2460"/>
 
 
-        <GuidSymbol name="guidImages" value="{32af3640-1f91-41ee-8faa-f78876c88811}" >
-            <IDSymbol name="bmpIndex_Layout_NeighborhoodBrowseMode" value="1" />
-            <IDSymbol name="bmpCompare" value="2" />
-            <IDSymbol name="bmpFilter" value="3" />
-            <IDSymbol name="bmpButterflyMode" value="4" />
-            <IDSymbol name="bmpPicArrows" value="5" />
-            <IDSymbol name="bmpPicStrikethrough" value="6" />
-        </GuidSymbol>
-    </Symbols>
+      <IDSymbol name="cmdidNeighborhoodBrowseMode" value="0x0100" />
+    </GuidSymbol>
+
+
+    <GuidSymbol name="guidImages" value="{32af3640-1f91-41ee-8faa-f78876c88811}" >
+      <IDSymbol name="bmpIndex_Layout_NeighborhoodBrowseMode" value="1" />
+      <IDSymbol name="bmpCompare" value="2" />
+      <IDSymbol name="bmpFilter" value="3" />
+      <IDSymbol name="bmpButterflyMode" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
+  </Symbols>
 </CommandTable>
