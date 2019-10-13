@@ -202,6 +202,11 @@ namespace LovettSoftware.DgmlPowerTools
             }
         }
 
+        internal void RemoveItem(GroupItemViewModel item)
+        {
+            this.items.Remove(item);
+        }
+
         private void GroupNodesMatching(GraphNode group, string term)
         {
             if (graph == null)
@@ -290,6 +295,15 @@ namespace LovettSoftware.DgmlPowerTools
                 }
                 this.AddNewItem();
             }
+        }
+
+        internal void CheckNewItem()
+        {
+            GroupItemViewModel last = this.items.LastOrDefault();
+            if (last == null || last.Label != NewItemCaption)
+            {
+                AddNewItem();
+            }            
         }
     }
 

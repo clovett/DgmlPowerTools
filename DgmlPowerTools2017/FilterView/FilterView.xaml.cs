@@ -44,7 +44,7 @@ namespace LovettSoftware.DgmlPowerTools
 
         void StopWatchingItems()
         {
-            foreach(var item in viewModel.Items)
+            foreach (var item in viewModel.Items)
             {
                 item.PropertyChanged -= OnPropertyChanged;
             }
@@ -60,7 +60,7 @@ namespace LovettSoftware.DgmlPowerTools
                 item.PropertyChanged += OnPropertyChanged;
             }
         }
-        
+
         void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             if (e.OldItems != null)
@@ -88,7 +88,7 @@ namespace LovettSoftware.DgmlPowerTools
                 if (item.Label != GroupViewModel.NewItemCaption)
                 {
                     // See if there is any placeholder in the list
-                    if (! (from x in viewModel.Items where x.Label == GroupViewModel.NewItemCaption select x).Any())
+                    if (!(from x in viewModel.Items where x.Label == GroupViewModel.NewItemCaption select x).Any())
                     {
                         // then add one.
                         viewModel.AddNewItem();
@@ -96,7 +96,7 @@ namespace LovettSoftware.DgmlPowerTools
                 }
             }
         }
-        
+
         internal void OnInitialized(IServiceProvider sp)
         {
             serviceProvider = sp;
@@ -199,10 +199,19 @@ namespace LovettSoftware.DgmlPowerTools
 
         }
 
-        private void OnClearClick(object sender, RoutedEventArgs e)
+        private void OnClearList(object sender, RoutedEventArgs e)
         {
             viewModel.RemoveGroups();
             viewModel.Items.Clear();
+        }
+
+        private void OnDeleteClick(object sender, RoutedEventArgs e)
+        {
+            var item = FilterList.SelectedItem as GroupItemViewModel;
+            if (item != null)
+            {
+                this.viewModel.RemoveItem(item);
+            }
         }
 
         private void OnListKeyDown(object sender, KeyEventArgs e)
@@ -305,10 +314,11 @@ namespace LovettSoftware.DgmlPowerTools
             CloseBox box = sender as CloseBox;
             GroupItemViewModel model = box.DataContext as GroupItemViewModel;
             if (model != null)
-            {              
+            {
                 viewModel.Items.Remove(model);
             }
         }
+
         private void OnItemSelected(object sender, SelectionChangedEventArgs e)
         {
             if (e.RemovedItems != null)
@@ -331,7 +341,7 @@ namespace LovettSoftware.DgmlPowerTools
                 model.IsSelected = true;
             }
         }
-        
+
         private void OnMoreClick(object sender, RoutedEventArgs e)
         {
             FilterList.ContextMenu.IsOpen = true;
@@ -378,6 +388,26 @@ namespace LovettSoftware.DgmlPowerTools
                 {
                     MessageBox.Show(ex.Message, "Error Saving Group Patterns: " + ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+            }
+        }
+
+        private void OnLabelChanged(object sender, EventArgs e)
+        {
+            viewModel.CheckNewItem();
+        }
+
+        private void OnExpressionChanged(object sender, EventArgs e)
+        {
+            viewModel.CheckNewItem();
+        }
+
+        private void OnLabelGotFocus(object sender, RoutedEventArgs e)
+        {
+            EditableTextBlock box = (EditableTextBlock)sender;
+            var item = box.DataContext as GroupItemViewModel;
+            if (item != null)
+            {
+                this.FilterList.SelectedItem = item;
             }
         }
     }

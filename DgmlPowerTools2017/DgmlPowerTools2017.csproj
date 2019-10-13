@@ -81,6 +81,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="SvgExporter\SvgExporter.cs" />
+    <Compile Include="SvgExporter\SvgModel.cs" />
     <Compile Include="Utilities\Commands.cs" />
     <Compile Include="Utilities\GraphDocumentWindowTracker.cs" />
     <Compile Include="Utilities\GroupViewModel.cs" />
