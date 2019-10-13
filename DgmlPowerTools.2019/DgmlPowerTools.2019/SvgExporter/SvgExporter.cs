@@ -623,7 +623,7 @@ namespace LovettSoftware.DgmlPowerTools
                 if (noShape)
                 {
                     // blue selection 
-                    background = GetNamedBrush("NoShapeSelectionBrush", null);
+                    var selectionBrush = GetNamedBrush("NoShapeSelectionBrush", null);
                     string border = GetNamedBrush("NoShapeSelectionBorder", (Brush)control.FindResource(GraphColors.NoShapeSelectionBorder));
 
                     parent.AddChild(new SvgRectangle()
@@ -636,7 +636,7 @@ namespace LovettSoftware.DgmlPowerTools
                         Height = bounds.Height,
                         Stroke = border,
                         StrokeWidth = 1,
-                        Fill = background
+                        Fill = selectionBrush
                     });
                 }
                 else
@@ -656,7 +656,11 @@ namespace LovettSoftware.DgmlPowerTools
                 }
             }
 
-            if (!noShape)
+            if (noShape)
+            {
+                background = this.GraphBackgroundColor;
+            }
+            else
             {
                 parent.AddChild(new SvgRectangle()
                 {
@@ -1250,7 +1254,12 @@ namespace LovettSoftware.DgmlPowerTools
                         QuadraticBezierSegment quad = seg as QuadraticBezierSegment;
                         if (quad != null)
                         {
-                            // todo: can SVG draw these?
+                            return quad.Point1;
+                        }
+                        ArcSegment arc = seg as ArcSegment;
+                        if (arc != null)
+                        {
+                            return arc.Point;
                         }
                     }
                 }
