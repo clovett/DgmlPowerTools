@@ -164,7 +164,7 @@ namespace LovettSoftware.DgmlPowerTools
                 // root level links go underneath everything
                 foreach (GraphNode node in control.Graph.VisibleOrphanNodes)
                 {
-                    ExportLinks(root, node.OutgoingLinks);
+                    ExportLinks(root, node.OutgoingLinks, true);
                 }
 
                 // then the group hierarchy.
@@ -185,7 +185,7 @@ namespace LovettSoftware.DgmlPowerTools
                 }
 
                 // then cross-group links on top of everything
-                ExportLinks(root, crossGroup);
+                ExportLinks(root, crossGroup, false);
 
                 Rect bounds = ExportLegend(root, extent);
                 extent.Width += bounds.Width;
@@ -213,13 +213,13 @@ namespace LovettSoftware.DgmlPowerTools
             }));
         }
 
-        private void ExportLinks(SvgGroup root, IEnumerable<GraphLink> links)
+        private void ExportLinks(SvgGroup root, IEnumerable<GraphLink> links, bool includeLabels)
         {
             foreach (GraphLink link in links)
             {
                 if (!link.IsChildLink)
                 {
-                    ExportLink(control, root, link);
+                    ExportLink(control, root, link, includeLabels);
                 }
             }
         }
@@ -238,6 +238,10 @@ namespace LovettSoftware.DgmlPowerTools
             {
                 return;
             }
+
+            SvgGroup groupGroup = new SvgGroup();
+            groupGroup.Id = group.Id.ToString();
+            parent.AddChild(groupGroup);
 
             // todo: there is a separate GraphGroupTitleBar color...
 
@@ -259,7 +263,7 @@ namespace LovettSoftware.DgmlPowerTools
             if (node.GetIsSelected())
             {
                 // selection outline.
-                parent.AddChild(new SvgRectangle()
+                groupGroup.AddChild(new SvgRectangle()
                 {
                     X = bounds.Left,
                     Y = bounds.Top,
@@ -272,7 +276,7 @@ namespace LovettSoftware.DgmlPowerTools
                 });
             }
 
-            parent.AddChild(new SvgRectangle()
+            groupGroup.AddChild(new SvgRectangle()
             {
                 X = bounds.Left,
                 Y = bounds.Top,
@@ -288,7 +292,7 @@ namespace LovettSoftware.DgmlPowerTools
             bounds.Inflate(-10, -5); // inset by label margin.
 
             string foreground = GetNamedBrush("GraphGroupTitleBarText", node.GetForeground(control));
-            Size labelSize = ExportIconLabel(parent, bounds, node, foreground, background, VerticalAlignment.Top, false);
+            Size labelSize = ExportIconLabel(groupGroup, bounds, node, foreground, background, VerticalAlignment.Top, false);
 
             // This has changed, it seems to use the GraphBackgroundColor now
             //string contentBrush = GetNamedBrush("GraphGroupContentColor", node.GetGroupContentColor());
@@ -307,7 +311,7 @@ namespace LovettSoftware.DgmlPowerTools
             bounds.Inflate(-5, -5);
 
             // group inner rectangle
-            parent.AddChild(new SvgRectangle()
+            groupGroup.AddChild(new SvgRectangle()
             {
                 X = bounds.Left,
                 Y = bounds.Top,
@@ -334,7 +338,7 @@ namespace LovettSoftware.DgmlPowerTools
                             }
                             else
                             {
-                                ExportLink(control, parent, link);
+                                ExportLink(control, groupGroup, link, true);
                             }
                         }
                     }
@@ -355,18 +359,19 @@ namespace LovettSoftware.DgmlPowerTools
                             }
                             else
                             {
-                                ExportLink(control, parent, link);
+                                ExportLink(control, groupGroup, link, true);
                             }
                         }
                     }
                 }
             }
+
             // now the nodes
             foreach (GraphNode child in group.ChildNodes)
             {
                 if (child.IsVisible() && !child.IsGroup)
                 {
-                    ExportNode(control, parent, child);
+                    ExportNode(control, groupGroup, child);
                 }
             }
 
@@ -375,7 +380,7 @@ namespace LovettSoftware.DgmlPowerTools
             {
                 if (childGroup.IsVisible())
                 {
-                    ExportGroup(control, parent, childGroup);
+                    ExportGroup(control, groupGroup, childGroup);
                 }
             }
 
@@ -415,12 +420,16 @@ namespace LovettSoftware.DgmlPowerTools
             }
         }
 
-        private void ExportLink(GraphControl control, SvgGroup parent, GraphLink link)
+        private void ExportLink(GraphControl control, SvgGroup parent, GraphLink link, bool includeLabel)
         {
             if (!link.IsReallyTrulyVisible(control.Graph) || this.crossGroupLinkStyle == CrossGroupLinkStyle.HideAllLinks)
             {
                 return;
             }
+
+            var linkGroup = new SvgGroup();
+            linkGroup.Id = link.Source.Id.ToString() + "->" + link.Target.Id.ToString();
+            parent.AddChild(linkGroup);
 
             Geometry g = link.GetGeometry();
             if (g != null)
@@ -452,12 +461,12 @@ namespace LovettSoftware.DgmlPowerTools
                 }
 
                 string pathData = XmlExtensions.ToString(g);
-                string arrowHead = GetArrowheadPath(parent, link, thickness);
+                string arrowHead = GetArrowheadPath(link, thickness);
 
                 if (link.GetIsSelected())
                 {
                     // selected link
-                    parent.AddChild(new SvgPath()
+                    linkGroup.AddChild(new SvgPath()
                     {
                         Stroke = SelectionBrush,
                         StrokeWidth = thickness + SelectionThickness,
@@ -465,7 +474,7 @@ namespace LovettSoftware.DgmlPowerTools
                     });
 
                     // selected arrowhead
-                    parent.AddChild(new SvgPath()
+                    linkGroup.AddChild(new SvgPath()
                     {
                         Stroke = SelectionBrush,
                         Fill = SelectionBrush,
@@ -475,7 +484,7 @@ namespace LovettSoftware.DgmlPowerTools
                     });
                 }
 
-                parent.AddChild(new SvgPath()
+                linkGroup.AddChild(new SvgPath()
                 {
                     Stroke = stroke,
                     StrokeWidth = thickness,
@@ -484,7 +493,7 @@ namespace LovettSoftware.DgmlPowerTools
                 });
 
                 // arrowhead
-                parent.AddChild(new SvgPath()
+                linkGroup.AddChild(new SvgPath()
                 {
                     Stroke = stroke,
                     Fill = stroke,
@@ -495,11 +504,11 @@ namespace LovettSoftware.DgmlPowerTools
 
 
                 string label = link.Label;
-                if (!string.IsNullOrWhiteSpace(label))
+                if (includeLabel && !string.IsNullOrWhiteSpace(label))
                 {
                     string foreground = GetNamedBrush("LinkBrush", link.GetStroke(control));
                     Rect labelBounds = link.GetLabelBounds();
-                    ExportIconLabel(parent, labelBounds, link, foreground, GraphBackgroundColor, VerticalAlignment.Top, true);
+                    ExportIconLabel(linkGroup, labelBounds, link, foreground, GraphBackgroundColor, VerticalAlignment.Top, true);
                 }
 
             }
@@ -531,7 +540,7 @@ namespace LovettSoftware.DgmlPowerTools
         // Copied from LinkEndArrowhead.cs
         const double MinHeadWidth = 8;
 
-        private string GetArrowheadPath(SvgGroup parent, GraphLink link, double strokeThickness)
+        private string GetArrowheadPath(GraphLink link, double strokeThickness)
         {
             // get arrowhead dimensions.
             Point endPoint = XmlExtensions.GetEndPoint(link.GetGeometry());
@@ -596,6 +605,11 @@ namespace LovettSoftware.DgmlPowerTools
             {
                 return;
             }
+
+            SvgGroup nodeGroup = new SvgGroup();
+            nodeGroup.Id = node.Id.ToString();
+            parent.AddChild(nodeGroup);
+
             string background = GetNamedBrush("GraphNodeBackground", node.GetBackground(control));
             string stroke = GetNamedBrush("GraphNodeBorder", node.GetStroke(control));
             double thickness = node.GetStrokeThickness(control);
@@ -626,7 +640,7 @@ namespace LovettSoftware.DgmlPowerTools
                     var selectionBrush = GetNamedBrush("NoShapeSelectionBrush", null);
                     string border = GetNamedBrush("NoShapeSelectionBorder", (Brush)control.FindResource(GraphColors.NoShapeSelectionBorder));
 
-                    parent.AddChild(new SvgRectangle()
+                    nodeGroup.AddChild(new SvgRectangle()
                     {
                         X = bounds.Left,
                         Y = bounds.Top,
@@ -642,7 +656,7 @@ namespace LovettSoftware.DgmlPowerTools
                 else
                 {
                     // selection outline
-                    parent.AddChild(new SvgRectangle()
+                    nodeGroup.AddChild(new SvgRectangle()
                     {
                         X = bounds.Left,
                         Y = bounds.Top,
@@ -662,7 +676,7 @@ namespace LovettSoftware.DgmlPowerTools
             }
             else
             {
-                parent.AddChild(new SvgRectangle()
+                nodeGroup.AddChild(new SvgRectangle()
                 {
                     X = bounds.Left,
                     Y = bounds.Top,
@@ -678,7 +692,7 @@ namespace LovettSoftware.DgmlPowerTools
 
             bounds.Inflate(-10, -5); // inset by label margin.
             string foreground = GetNamedBrush("GraphTextColor", node.GetForeground(control));
-            ExportIconLabel(parent, bounds, node, foreground, background, VerticalAlignment.Center, false);
+            ExportIconLabel(nodeGroup, bounds, node, foreground, background, VerticalAlignment.Center, false);
         }
 
         private bool IsAlmostEqual(double a, double b, double tolerance)
