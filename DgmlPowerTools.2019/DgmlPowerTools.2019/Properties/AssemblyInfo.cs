@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lovett Software")]
 [assembly: AssemblyProduct("DgmlPowerTools.2019")]
-[assembly: AssemblyCopyright("Lovett Software 2019")]
+[assembly: AssemblyCopyright("Lovett Software 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

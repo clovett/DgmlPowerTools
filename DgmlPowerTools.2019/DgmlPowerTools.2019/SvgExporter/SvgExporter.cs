@@ -1276,11 +1276,6 @@ namespace LovettSoftware.DgmlPowerTools
                         {
                             return arc.Point;
                         }
-                        ArcSegment arc = seg as ArcSegment;
-                        if (arc != null)
-                        {
-                            return arc.Point;
-                        }
                     }
                 }
             }
