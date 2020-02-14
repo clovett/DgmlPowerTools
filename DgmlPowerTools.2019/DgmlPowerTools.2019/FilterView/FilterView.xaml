@@ -11,7 +11,6 @@
              d:DesignHeight="300" d:DesignWidth="300"
              Name="MyToolWindow">
     <UserControl.Resources>
-        <local:PlaceholderForegroundConverter x:Key="PlaceholderForegroundConverter"/>
         <local:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter"/>
         <!-- CloseBox -->
         <SolidColorBrush x:Key="CloseBoxNormalBackground" Color="Gray"/>
@@ -27,22 +26,30 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <local:EditableTextBlock Label="{Binding Label, Mode=TwoWay}" FontSize="14" FontWeight="Bold"
-                                         Foreground="{Binding Path=Label, Converter={StaticResource PlaceholderForegroundConverter}}"
-                                         KeyDown="OnLabelKeyDown"  Margin="0,0,0,4"/>
+                                         Foreground="{DynamicResource VsBrush.WindowText}"
+                                         KeyDown="OnLabelKeyDown"  Margin="0,0,0,4"
+                                         LabelChanged="OnLabelChanged" GotFocus="OnLabelGotFocus"/>
                 <local:EditableTextBlock Label="{Binding Expression, Mode=TwoWay}"  
-                                         Foreground="{Binding Path=Label, Converter={StaticResource PlaceholderForegroundConverter}}"
-                                         KeyDown="OnExpressionKeyDown" Margin="0,0,0,4" Grid.Row="1"/>
-                
+                                         Foreground="{DynamicResource VsBrush.WindowText}"
+                                         KeyDown="OnExpressionKeyDown" Margin="0,0,0,4" Grid.Row="1"
+                                         LabelChanged="OnExpressionChanged" GotFocus="OnLabelGotFocus"/>
+
                 <local:CloseBox HorizontalAlignment="Right" Margin="4" Click="OnCloseClick"
                                 Visibility="{Binding IsSelected, Converter={StaticResource BooleanVisibilityConverter}}"/>
             </Grid>
         </DataTemplate>
-        <Style x:Key="CompactListStyle" TargetType="ListBoxItem"> 
+        <Style x:Key="CompactListStyle" TargetType="ListBoxItem">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="Padding" Value="1"/>
         </Style>
+        <ContextMenu x:Key="CustomMenu">
+            <MenuItem Header="Save..." Click="OnSaveGroups"/>
+            <MenuItem Header="Load..." Click="OnLoadGroups"/>
+            <Separator/>
+            <MenuItem Header="Clear All" Click="OnClearList"/>
+        </ContextMenu>
     </UserControl.Resources>
     <DockPanel>
 
@@ -53,11 +60,13 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
                 <local:ToolbarButton x:Name="ApplyGroupsButton" Click="OnApplyGroups" ToolTip="Apply grouping" IconUri="Resources/ApplyGroups.png"/>
                 <local:ToolbarButton x:Name="RemoveGroupButton" Click="OnRemoveGroups" ToolTip="Remove groups" Grid.Column="1" IconUri="Resources/RemoveGroups.png"/>
-                <local:ToolbarButton x:Name="ClearButton" Click="OnClearClick" ToolTip="Clear list" Grid.Column="2" IconUri="Resources/Clear.png"/>
+                <local:ToolbarButton x:Name="DeleteButton" Click="OnDeleteClick" ToolTip="Delete item" Grid.Column="2" IconUri="Resources/Clear.png"/>
+                <local:ToolbarButton x:Name="AddButton" Click="OnMoreClick" ToolTip="More" Grid.Column="3" IconUri="Resources/More.png"/>
             </Grid>
         </Border>
         <Grid>
@@ -73,12 +82,15 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>               
+                </Grid.RowDefinitions>
             </Grid>
             <ListView x:Name="FilterList" Grid.Row="1" ItemTemplate="{StaticResource GroupItemTemplate}" Padding="0"
                       ItemContainerStyle="{StaticResource CompactListStyle}" Focusable="True" SelectionMode="Single"
                       SelectionChanged="OnItemSelected"
-                      KeyDown="OnListKeyDown" >
+                      BorderThickness="0"
+                      Background="{DynamicResource VsBrush.ToolWindowBackground}"                      
+                      Foreground="{DynamicResource VsBrush.ToolWindowText}"
+                      KeyDown="OnListKeyDown" ContextMenu="{StaticResource CustomMenu}">
 
             </ListView>
         </Grid>

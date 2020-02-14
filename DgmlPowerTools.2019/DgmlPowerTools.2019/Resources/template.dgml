@@ -2,14 +2,6 @@
 <DirectedGraph xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes />
   <Links />
-  <Properties>
-    <Property Id="Expression" DataType="System.String" />
-    <Property Id="GroupLabel" DataType="System.String" />
-    <Property Id="IsEnabled" DataType="System.Boolean" />
-    <Property Id="TargetType" DataType="System.Type" />
-    <Property Id="Value" DataType="System.String" />
-    <Property Id="ValueLabel" DataType="System.String" />
-  </Properties>
   <Styles>
     <Style TargetType="Node" GroupLabel="GroupPartialAdd" ValueLabel="True">
       <Condition Expression="HasCategory('DGMLDiff.Partial') and ChildrenAdded &gt; ChildrenRemoved " />

@@ -7,13 +7,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace LovettSoftware.DgmlPowerTools
 {
     public class GroupViewModel
     {
-        public const string NewItemCaption = "<new>";
-        public const string NewItemExpression = "<expr>";
+        public const string NewItemCaption = "<new group>";
+        public const string NewItemExpression = "<comma separated search terms>";
 
         Graph graph;
         ObservableCollection<GroupItemViewModel> items = new ObservableCollection<GroupItemViewModel>();
@@ -201,6 +202,11 @@ namespace LovettSoftware.DgmlPowerTools
             }
         }
 
+        internal void RemoveItem(GroupItemViewModel item)
+        {
+            this.items.Remove(item);
+        }
+
         private void GroupNodesMatching(GraphNode group, string term)
         {
             if (graph == null)
@@ -231,7 +237,74 @@ namespace LovettSoftware.DgmlPowerTools
             }
         }
 
+        internal void Save(string filename)
+        {
+            XDocument doc = new XDocument(new XElement("Groups"));
+            XElement root = doc.Root;
+            foreach (var item in items)
+            {
+                if (!item.Label.StartsWith("<"))
+                {
+                    root.Add(new XElement("Group",
+                        new XAttribute("Name", item.Label),
+                        new XAttribute("Terms", item.Expression)
+                        ));
+                }
+            }
+            doc.Save(filename);
+        }
 
+        internal void Load(string filename)
+        {
+            ObservableCollection<GroupItemViewModel> newitems = new ObservableCollection<GroupItemViewModel>();
+            XDocument doc = XDocument.Load(filename);
+            if (doc.Root.Name.LocalName == "Groups")
+            {
+                foreach (XElement child in doc.Root.Elements())
+                {
+                    if (child.Name.LocalName == "Group")
+                    {
+                        string label = (string)child.Attribute("Name");
+                        string terms = (string)child.Attribute("Terms");
+                        if (!string.IsNullOrEmpty(label) && !string.IsNullOrEmpty(terms) &&
+                            !label.StartsWith("<"))
+                        {
+                            newitems.Add(new GroupItemViewModel()
+                            {
+                                Label = label,
+                                Expression = terms
+                            });
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("XML <Groups> must contain <Group> children");
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("XML file must contain <Groups> element");
+            }
+            if (newitems.Count > 0)
+            {
+                this.items.Clear();
+                foreach (var item in newitems)
+                {
+                    this.items.Add(item);
+                }
+                this.AddNewItem();
+            }
+        }
+
+        internal void CheckNewItem()
+        {
+            GroupItemViewModel last = this.items.LastOrDefault();
+            if (last == null || last.Label != NewItemCaption)
+            {
+                AddNewItem();
+            }            
+        }
     }
 
 

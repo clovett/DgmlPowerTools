@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.GraphModel;
 using Microsoft.VisualStudio.Progression;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,51 +35,48 @@ namespace LovettSoftware.DgmlPowerTools
         {
             InitializeComponent();
 
-            StartWatchingLastItem();
+            StartWatchingItems();
 
             viewModel.AddNewItem();
 
             FilterList.ItemsSource = viewModel.Items;
-            EnableButtons();
         }
 
-        void StopWatchingLastItem()
+        void StopWatchingItems()
         {
-            WatchLastItem(null);
+            foreach (var item in viewModel.Items)
+            {
+                item.PropertyChanged -= OnPropertyChanged;
+            }
             viewModel.Items.CollectionChanged -= Items_CollectionChanged;
         }
 
-        void StartWatchingLastItem()
+        void StartWatchingItems()
         {
             viewModel.Items.CollectionChanged += Items_CollectionChanged;
+            foreach (var item in viewModel.Items)
+            {
+                item.PropertyChanged -= OnPropertyChanged;
+                item.PropertyChanged += OnPropertyChanged;
+            }
         }
 
         void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            if (e.OldItems != null)
             {
-                int count = viewModel.Items.Count;
-                if (e.NewStartingIndex + e.NewItems.Count == count)
+                foreach (GroupItemViewModel item in e.OldItems)
                 {
-                    GroupItemViewModel item = (GroupItemViewModel)e.NewItems[e.NewItems.Count - 1];
-                    WatchLastItem(item);
+                    item.PropertyChanged -= OnPropertyChanged;
                 }
             }
-        }
-
-        GroupItemViewModel lastItem;
-
-        private void WatchLastItem(GroupItemViewModel item)
-        {
-            if (lastItem != null)
+            if (e.NewItems != null)
             {
-                lastItem.PropertyChanged -= OnPropertyChanged;
-            }
-            lastItem = item;
-            if (lastItem != null)
-            {
-                lastItem.PropertyChanged += OnPropertyChanged;
-                OnPropertyChanged(lastItem, new System.ComponentModel.PropertyChangedEventArgs("Label"));
+                foreach (GroupItemViewModel item in e.NewItems)
+                {
+                    item.PropertyChanged -= OnPropertyChanged;
+                    item.PropertyChanged += OnPropertyChanged;
+                }
             }
         }
 
@@ -89,18 +87,14 @@ namespace LovettSoftware.DgmlPowerTools
                 GroupItemViewModel item = (GroupItemViewModel)sender;
                 if (item.Label != GroupViewModel.NewItemCaption)
                 {
-                    // then we need a new last item for the next new item.
-                    viewModel.AddNewItem();
-                }
-                else if (item.Label == "")
-                {
-                    // keep watching - if it stays empty, and this is not the last item, then delete it.
+                    // See if there is any placeholder in the list
+                    if (!(from x in viewModel.Items where x.Label == GroupViewModel.NewItemCaption select x).Any())
+                    {
+                        // then add one.
+                        viewModel.AddNewItem();
+                    }
                 }
             }
-        }
-
-        private void EnableButtons()
-        {
         }
 
         internal void OnInitialized(IServiceProvider sp)
@@ -152,9 +146,9 @@ namespace LovettSoftware.DgmlPowerTools
             if (this.graph != null)
             {
                 this.graph.AddSchema(GroupViewModelSchema.Schema);
-                StopWatchingLastItem();
+                StopWatchingItems();
                 viewModel.SetGraph(graph);
-                StartWatchingLastItem();
+                StartWatchingItems();
                 viewModel.AddNewItem();
             }
         }
@@ -205,19 +199,28 @@ namespace LovettSoftware.DgmlPowerTools
 
         }
 
-        private void OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            EnableButtons();
-        }
-
-        private void OnClearClick(object sender, RoutedEventArgs e)
+        private void OnClearList(object sender, RoutedEventArgs e)
         {
             viewModel.RemoveGroups();
             viewModel.Items.Clear();
         }
 
+        private void OnDeleteClick(object sender, RoutedEventArgs e)
+        {
+            var item = FilterList.SelectedItem as GroupItemViewModel;
+            if (item != null)
+            {
+                this.viewModel.RemoveItem(item);
+            }
+        }
+
         private void OnListKeyDown(object sender, KeyEventArgs e)
         {
+            if (Keyboard.FocusedElement is TextBox)
+            {
+                // user is editing...so +/- could be valid search strings.
+                return;
+            }
             var item = FilterList.SelectedItem as GroupItemViewModel;
             if (item != null)
             {
@@ -229,9 +232,11 @@ namespace LovettSoftware.DgmlPowerTools
 
                     if (index > 0)
                     {
+                        StopWatchingItems();
                         viewModel.Items.Remove(item);
                         viewModel.Items.Insert(index - 1, item);
                         FilterList.SelectedItem = item;
+                        StartWatchingItems();
                     }
                 }
                 else if (e.Key == Key.OemPlus || e.Key == Key.Add)
@@ -239,11 +244,23 @@ namespace LovettSoftware.DgmlPowerTools
                     e.Handled = true;
                     if (index < viewModel.Items.Count - 1)
                     {
+                        StopWatchingItems();
                         viewModel.Items.Remove(item);
                         viewModel.Items.Insert(index + 1, item);
                         FilterList.SelectedItem = item;
-                        e.Handled = true;
+                        StartWatchingItems();
                     }
+                }
+                else if (e.Key == Key.Insert)
+                {
+                    e.Handled = true;
+                    StopWatchingItems();
+                    viewModel.AddNewItem();
+                    item = viewModel.Items.Last();
+                    viewModel.Items.Remove(item);
+                    viewModel.Items.Insert(index, item);
+                    FilterList.SelectedItem = item;
+                    StartWatchingItems();
                 }
             }
         }
@@ -253,7 +270,7 @@ namespace LovettSoftware.DgmlPowerTools
             EditableTextBlock editable = (EditableTextBlock)sender;
             if (e.Key == Key.Tab)
             {
-                StackPanel parent = editable.Parent as StackPanel;
+                Grid parent = editable.Parent as Grid;
                 int i = parent.Children.IndexOf(editable);
                 if (parent.Children.Count >= i + 1)
                 {
@@ -275,7 +292,7 @@ namespace LovettSoftware.DgmlPowerTools
             EditableTextBlock editable = (EditableTextBlock)sender;
             if (e.Key == Key.Tab && (e.KeyboardDevice.IsKeyDown(Key.LeftShift) || e.KeyboardDevice.IsKeyDown(Key.RightShift)))
             {
-                StackPanel parent = editable.Parent as StackPanel;
+                Grid parent = editable.Parent as Grid;
                 int i = parent.Children.IndexOf(editable);
                 if (i > 0)
                 {
@@ -287,7 +304,7 @@ namespace LovettSoftware.DgmlPowerTools
             else if (e.Key == Key.Escape)
             {
                 editable.CommitEdit();
-                Dispatcher.BeginInvoke(new System.Action(() => FilterList.Focus()));
+                Dispatcher.BeginInvoke(new System.Action(() => { FilterList.Focus(); }));
                 e.Handled = true;
             }
         }
@@ -297,17 +314,11 @@ namespace LovettSoftware.DgmlPowerTools
             CloseBox box = sender as CloseBox;
             GroupItemViewModel model = box.DataContext as GroupItemViewModel;
             if (model != null)
-            {              
+            {
                 viewModel.Items.Remove(model);
             }
         }
 
-        /// <summary>
-        /// Track the list item selection so we can update the GroupItemViewModel state
-        /// which is used to trigger CloseBox visibility.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void OnItemSelected(object sender, SelectionChangedEventArgs e)
         {
             if (e.RemovedItems != null)
@@ -328,6 +339,75 @@ namespace LovettSoftware.DgmlPowerTools
                     }
                 }
                 model.IsSelected = true;
+            }
+        }
+
+        private void OnMoreClick(object sender, RoutedEventArgs e)
+        {
+            FilterList.ContextMenu.IsOpen = true;
+        }
+
+        private void OnSaveGroups(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.SaveFileDialog fd = new Microsoft.Win32.SaveFileDialog();
+            fd.CheckPathExists = true;
+            fd.AddExtension = true;
+            fd.Filter = "XML File (.xml)|*.xml";
+
+            if (fd.ShowDialog(Application.Current.MainWindow) == true)
+            {
+                try
+                {
+                    string filename = fd.FileName;
+                    viewModel.Save(filename);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error Saving Group Patterns: " + ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+
+        private void OnLoadGroups(object sender, RoutedEventArgs e)
+        {
+            // Restore SQL CE database from a backup.
+            OpenFileDialog fd = new OpenFileDialog();
+            fd.Title = "Restore Database";
+            fd.Filter = "XML File (.xml)|*.xml";
+            fd.CheckFileExists = true;
+            if (fd.ShowDialog(Application.Current.MainWindow) == true)
+            {
+                try
+                {
+                    StopWatchingItems();
+                    viewModel.Load(fd.FileName);
+                    StartWatchingItems();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error Saving Group Patterns: " + ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        private void OnLabelChanged(object sender, EventArgs e)
+        {
+            viewModel.CheckNewItem();
+        }
+
+        private void OnExpressionChanged(object sender, EventArgs e)
+        {
+            viewModel.CheckNewItem();
+        }
+
+        private void OnLabelGotFocus(object sender, RoutedEventArgs e)
+        {
+            EditableTextBlock box = (EditableTextBlock)sender;
+            var item = box.DataContext as GroupItemViewModel;
+            if (item != null)
+            {
+                this.FilterList.SelectedItem = item;
             }
         }
     }
