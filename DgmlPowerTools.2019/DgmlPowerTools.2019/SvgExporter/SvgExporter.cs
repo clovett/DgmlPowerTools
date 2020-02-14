@@ -18,6 +18,7 @@ using System.Reflection;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.IO;
+using System.Diagnostics;
 
 namespace LovettSoftware.DgmlPowerTools
 {
@@ -2055,13 +2056,16 @@ namespace LovettSoftware.DgmlPowerTools
                         {
                             // todo: can SVG draw these?
                         }
+                        ArcSegment arc = seg as ArcSegment;
+                        if (arc != null)
+                        {
+                            return arc.Point;
+                        }
                     }
                 }
             }
             return new Point(0, 0);
-
         }
-
 
         internal static string ToString(Geometry g)
         {
@@ -2107,6 +2111,21 @@ namespace LovettSoftware.DgmlPowerTools
                         {
                             // todo: can SVG draw these?
                         }
+                        ArcSegment arc = seg as ArcSegment;
+                        if (arc != null)
+                        {
+                            sb.Append(" A ");
+                            sb.Append(ToString(arc.Size));
+                            sb.Append(" ");
+                            sb.Append(arc.RotationAngle);
+                            sb.Append(" ");
+                            sb.Append(arc.IsLargeArc ? 1 : 0);
+                            sb.Append(" ");
+                            sb.Append(arc.SweepDirection == SweepDirection.Clockwise ? 1 : 0);
+                            sb.Append(" ");
+                            sb.Append(ToString(arc.Point));
+                            continue;
+                        }
                     }
 
                     if (fig.IsClosed)
@@ -2126,6 +2145,12 @@ namespace LovettSoftware.DgmlPowerTools
         {
             return p.X.ToString(CultureInfo.InvariantCulture) + "," +
                    p.Y.ToString(CultureInfo.InvariantCulture);
+        }
+
+        internal static string ToString(Size s)
+        {
+            return s.Width.ToString(CultureInfo.InvariantCulture) + "," +
+                   s.Height.ToString(CultureInfo.InvariantCulture);
         }
     }
 
