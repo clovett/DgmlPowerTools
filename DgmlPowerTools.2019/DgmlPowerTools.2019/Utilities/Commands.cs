@@ -534,6 +534,12 @@ namespace LovettSoftware.DgmlPowerTools
             sd.CheckPathExists = true;
             sd.Filter = "SVG Files (*.svg)|*.svg";
             sd.FilterIndex = 0;
+            string filename = this.graphWindow?.Document?.FileName;
+            if (!string.IsNullOrEmpty(filename))
+            {
+                string baseName = System.IO.Path.GetFileNameWithoutExtension(filename);
+                sd.FileName = baseName + ".svg";
+            }
 
             if (true == sd.ShowDialog())
             {
