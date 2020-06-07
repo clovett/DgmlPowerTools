@@ -35,4 +35,15 @@
             </ControlTemplate.Triggers>-->
         </ControlTemplate>
     </Button.Template>
+    <Button.FocusVisualStyle>
+        <Style>
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Ellipse Margin="-2" StrokeThickness="1" Stroke="Black" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Button.FocusVisualStyle>
 </c:CustomizableButton>

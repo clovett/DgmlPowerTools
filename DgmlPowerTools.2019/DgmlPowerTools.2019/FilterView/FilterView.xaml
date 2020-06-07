@@ -21,7 +21,7 @@
         <SolidColorBrush x:Key="CloseBoxMouseOverForeground" Color="Black"/>
 
         <DataTemplate x:Key="GroupItemTemplate">
-            <Grid >
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -30,13 +30,15 @@
                 <local:EditableTextBlock Label="{Binding Label, Mode=TwoWay}" FontSize="14" FontWeight="Bold"
                                          Foreground="{DynamicResource VsBrush.WindowText}"
                                          KeyDown="OnLabelKeyDown"  Margin="0,0,0,4"
+                                         MaxWidth="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
                                          LabelChanged="OnLabelChanged" GotFocus="OnLabelGotFocus"/>
                 <local:EditableTextBlock Label="{Binding Expression, Mode=TwoWay}"  
                                          Foreground="{DynamicResource VsBrush.WindowText}"
                                          KeyDown="OnExpressionKeyDown" Margin="0,0,0,4" Grid.Row="1"
+                                         MaxWidth="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
                                          LabelChanged="OnExpressionChanged" GotFocus="OnLabelGotFocus"/>
 
-                <local:CloseBox HorizontalAlignment="Right" Margin="4" Click="OnCloseClick"
+                <local:CloseBox HorizontalAlignment="Right" Margin="0,-3,15,0" Click="OnCloseClick"
                                 Visibility="{Binding IsSelected, Converter={StaticResource BooleanVisibilityConverter}}"/>
             </Grid>
         </DataTemplate>
@@ -45,6 +47,12 @@
             <Setter Property="Padding" Value="1"/>
         </Style>
         <ContextMenu x:Key="CustomMenu">
+            <MenuItem Header="Move up" Click="OnMoveUp" InputGestureText="-"/>
+            <MenuItem Header="Move down" Click="OnMoveDown" InputGestureText="+"/>
+            <Separator/>
+            <MenuItem Header="Insert" Click="OnInsertItem" InputGestureText="Ins"/>
+            <MenuItem Header="Delete" Click="OnDeleteItem" InputGestureText="Del"/>
+            <Separator/>
             <MenuItem Header="Save..." Click="OnSaveGroups"/>
             <MenuItem Header="Load..." Click="OnLoadGroups"/>
             <Separator/>
@@ -88,9 +96,13 @@
                       ItemContainerStyle="{StaticResource CompactListStyle}" Focusable="True" SelectionMode="Single"
                       SelectionChanged="OnItemSelected"
                       BorderThickness="0"
+                      HorizontalAlignment="Left"
+                      Width="200"
                       Background="{DynamicResource VsBrush.ToolWindowBackground}"                      
                       Foreground="{DynamicResource VsBrush.ToolWindowText}"
-                      KeyDown="OnListKeyDown" ContextMenu="{StaticResource CustomMenu}">
+                      KeyDown="OnListKeyDown" 
+                      ContextMenu="{StaticResource CustomMenu}"
+                      PreviewMouseRightButtonDown="ListView_PreviewMouseRightButtonDown">
 
             </ListView>
         </Grid>

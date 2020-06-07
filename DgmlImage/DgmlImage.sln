@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlImage", "DgmlImage.csproj", "{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}"
 EndProject
 Global
@@ -9,12 +11,15 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|x86.ActiveCfg = Debug|x86
-		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|x86.Build.0 = Debug|x86
-		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|x86.ActiveCfg = Release|x86
-		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|x86.Build.0 = Release|x86
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Debug|x86.Build.0 = Debug|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|x86.ActiveCfg = Release|Any CPU
+		{DC6BE05B-9AE6-417B-9C24-58485C0D8ABC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C437BDCF-0286-49F3-85F2-B62E293AA678}
 	EndGlobalSection
 EndGlobal

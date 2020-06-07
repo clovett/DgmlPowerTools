@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -21,9 +22,16 @@ namespace LovettSoftware.DgmlPowerTools
 
         public ObservableCollection<GroupItemViewModel> Items { get { return items; } }
 
+        public Exception Error { get; private set; }
+
         internal void AddNewItem()
         {
-            this.items.Add(new GroupItemViewModel() { Label = NewItemCaption, Expression = NewItemExpression });
+            this.items.Add(CreateNewItem());
+        }
+
+        internal GroupItemViewModel CreateNewItem()
+        {
+            return new GroupItemViewModel() { Label = NewItemCaption, Expression = NewItemExpression };
         }
 
         internal void SetGraph(Graph graph)
@@ -214,6 +222,19 @@ namespace LovettSoftware.DgmlPowerTools
                 return;
             }
 
+            Regex regex = null;
+            if (term.Length > 2 && term[0] == '/' && term.Last() == '/')
+            {
+                try
+                {
+                    regex = new Regex(term.Trim('/'));
+                }
+                catch (Exception ex)
+                {
+                    this.Error = ex;
+                }
+            }
+
             HashSet<GraphNode> children = null;
 
             if (!groupIndex.TryGetValue(group, out children))
@@ -227,7 +248,8 @@ namespace LovettSoftware.DgmlPowerTools
                 string label = node.Label;
                 if (!node.IsGroup && !allGroupedNodes.Contains(node))
                 {
-                    if (label.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
+                    if ((regex != null && regex.IsMatch(label)) ||
+                        label.IndexOf(term, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         allGroupedNodes.Add(node);
                         children.Add(node);

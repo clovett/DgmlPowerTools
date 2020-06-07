@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="DgmlPowerTools._2019.65dce6b1-74a3-4865-a285-492b41ab6d7c" Version="2.0.5" Language="en-US" Publisher="Chris Lovett" />
+        <Identity Id="DgmlPowerTools._2019.65dce6b1-74a3-4865-a285-492b41ab6d7c" Version="2.0.6" Language="en-US" Publisher="Chris Lovett" />
         <DisplayName>DgmlPowerTools 2019</DisplayName>
-        <Description xml:space="preserve">DGML Power Tools is a VSIX package for Visual Studio 2019 that adds a bunch of handy new DGML related features, including neighborhood and butterfly modes, export to SVG, Drag/Drop of images, Graph Diff, and filtering.</Description>
+        <Description xml:space="preserve">DGML Power Tools is a VSIX package for Visual Studio 2019 that adds a bunch of handy new DGML related features, including neighborhood and butterfly modes, export to SVG, Drag/Drop of images, Graph Diff, and auto grouping.</Description>
         <MoreInfo>http://lovettsoftware.com</MoreInfo>
         <License>License.txt</License>
         <ReleaseNotes>ReleaseNotes.html</ReleaseNotes>

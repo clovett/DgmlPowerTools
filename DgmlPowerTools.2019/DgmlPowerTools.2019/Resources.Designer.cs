@@ -113,9 +113,9 @@ namespace LovettSoftware.DgmlPowerTools {
                 return ResourceManager.GetString("NeighborhoodDistance_All", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to DGML Filter View.
+        ///   Looks up a localized string similar to DGML Autogrouping.
         /// </summary>
         internal static string ToolWindowTitle {
             get {

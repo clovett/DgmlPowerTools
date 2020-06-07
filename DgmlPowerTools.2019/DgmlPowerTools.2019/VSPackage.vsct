@@ -232,13 +232,13 @@
       <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidDgmlFilterView" priority="0x0300" type="Button">
         <Annotation>
           <Documentation>
-            DGML Filter View
+            DGML Autogrouping
           </Documentation>
         </Annotation>
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1"/>
         <Icon guid="guidImages" id="bmpFilter" />
         <Strings>
-          <ButtonText>DGML Filter View</ButtonText>
+          <ButtonText>DGML Autogrouping</ButtonText>
           <CanonicalName>DirectedGraph.FilterView</CanonicalName>
           <LocCanonicalName>DirectedGraph.FilterView</LocCanonicalName>
         </Strings>

@@ -13,14 +13,15 @@
 
         <Border Padding="4,2" Background="Transparent" VerticalAlignment="Top"
                 MouseDown="OnBorderPointerPressed">
-            <TextBlock x:Name="LabelTextBlock" Text="" IsHitTestVisible="False"
+            <TextBlock x:Name="LabelTextBlock" Text="" IsHitTestVisible="False" TextWrapping="Wrap"
                        />
         </Border>
 
         <TextBox x:Name="LabelEditBox" Text="" 
                        Margin="0"
-                       LostFocus="PageTitleEditBox_LostFocus"
-                       KeyDown="PageTitleEditBox_KeyDown"
+                       TextWrapping="Wrap"
+                       LostFocus="EditBox_LostFocus"
+                       KeyDown="EditBox_KeyDown"
                        Visibility="Collapsed"
                        Padding="4,1" />
 

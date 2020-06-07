@@ -40,6 +40,13 @@ namespace LovettSoftware.DgmlPowerTools
             viewModel.AddNewItem();
 
             FilterList.ItemsSource = viewModel.Items;
+
+            this.SizeChanged += OnSizeChanged;
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            FilterList.Width = e.NewSize.Width;
         }
 
         void StopWatchingItems()
@@ -229,39 +236,70 @@ namespace LovettSoftware.DgmlPowerTools
                 if (e.Key == Key.OemMinus || e.Key == Key.Subtract)
                 {
                     e.Handled = true;
-
-                    if (index > 0)
-                    {
-                        StopWatchingItems();
-                        viewModel.Items.Remove(item);
-                        viewModel.Items.Insert(index - 1, item);
-                        FilterList.SelectedItem = item;
-                        StartWatchingItems();
-                    }
+                    MoveItemUp(item);
                 }
                 else if (e.Key == Key.OemPlus || e.Key == Key.Add)
                 {
                     e.Handled = true;
-                    if (index < viewModel.Items.Count - 1)
-                    {
-                        StopWatchingItems();
-                        viewModel.Items.Remove(item);
-                        viewModel.Items.Insert(index + 1, item);
-                        FilterList.SelectedItem = item;
-                        StartWatchingItems();
-                    }
+                    MoveItemDown(item);
                 }
                 else if (e.Key == Key.Insert)
                 {
                     e.Handled = true;
-                    StopWatchingItems();
-                    viewModel.AddNewItem();
-                    item = viewModel.Items.Last();
-                    viewModel.Items.Remove(item);
-                    viewModel.Items.Insert(index, item);
-                    FilterList.SelectedItem = item;
-                    StartWatchingItems();
+                    InsertNewItemBefore(this.FilterList.SelectedItem as GroupItemViewModel);
                 }
+                else if (e.Key == Key.Delete)
+                {
+                    e.Handled = true;
+                    DeleteSelectedItem();
+                }
+            }
+        }
+
+        private void MoveItemUp(GroupItemViewModel item)
+        {
+            var index = viewModel.Items.IndexOf(item);
+            if (index > 0)
+            {
+                StopWatchingItems();
+                viewModel.Items.Remove(item);
+                viewModel.Items.Insert(index - 1, item);
+                FilterList.SelectedItem = item;
+                StartWatchingItems();
+            }
+        }
+        
+        private void MoveItemDown(GroupItemViewModel item)
+        {
+            var index = viewModel.Items.IndexOf(item);
+            if (index < viewModel.Items.Count - 1)
+            {
+                StopWatchingItems();
+                viewModel.Items.Remove(item);
+                viewModel.Items.Insert(index + 1, item);
+                FilterList.SelectedItem = item;
+                StartWatchingItems();
+            }
+        }
+
+        private void InsertNewItemBefore(GroupItemViewModel item)
+        {
+            StopWatchingItems();
+            var index = viewModel.Items.IndexOf(item);
+            var newItem = viewModel.CreateNewItem();
+            viewModel.Items.Insert(index, newItem);
+            FilterList.SelectedItem = newItem;
+            StartWatchingItems();
+        }
+
+        private void DeleteSelectedItem()
+        {
+            var item = this.FilterList.SelectedItem as GroupItemViewModel;
+            if (item != null)
+            {
+                StopWatchingItems();
+                viewModel.Items.Remove(item);
+                StartWatchingItems();
             }
         }
 
@@ -409,6 +447,54 @@ namespace LovettSoftware.DgmlPowerTools
             {
                 this.FilterList.SelectedItem = item;
             }
+        }
+
+        private void ListView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            var element = e.OriginalSource as FrameworkElement;
+            if (element != null)
+            {
+                var item = element.DataContext as GroupItemViewModel;
+                if (item != null)
+                {
+                    this.FilterList.SelectedItem = item;
+                    this.FilterList.Focus();
+                }
+            }
+            this.FilterList.ContextMenu.IsOpen = true;
+            e.Handled = true;
+        }
+
+        private void OnMoveUp(object sender, RoutedEventArgs e)
+        {
+            var item = this.FilterList.SelectedItem as GroupItemViewModel;
+            if (item != null)
+            {
+                MoveItemUp(item);
+            }
+        }
+
+        private void OnMoveDown(object sender, RoutedEventArgs e)
+        {
+            var item = this.FilterList.SelectedItem as GroupItemViewModel;
+            if (item != null)
+            {
+                MoveItemDown(item);
+            }
+        }
+
+        private void OnInsertItem(object sender, RoutedEventArgs e)
+        {
+            var item = this.FilterList.SelectedItem as GroupItemViewModel;
+            if (item != null)
+            {
+                InsertNewItemBefore(item);
+            }
+        }
+
+        private void OnDeleteItem(object sender, RoutedEventArgs e)
+        {
+            DeleteSelectedItem();
         }
     }
 }

@@ -61,7 +61,7 @@ namespace LovettSoftware.DgmlPowerTools
         public event EventHandler LabelChanged;
 
 
-        private void PageTitleEditBox_LostFocus(object sender, RoutedEventArgs e)
+        private void EditBox_LostFocus(object sender, RoutedEventArgs e)
         {
             CommitEdit();
         }
@@ -73,7 +73,7 @@ namespace LovettSoftware.DgmlPowerTools
             Label = LabelEditBox.Text;
         }
 
-        private void PageTitleEditBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void EditBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == System.Windows.Input.Key.Enter)
             {

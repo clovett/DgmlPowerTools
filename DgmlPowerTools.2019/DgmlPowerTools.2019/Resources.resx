@@ -141,7 +141,7 @@
     <comment>menu label</comment>
   </data>
   <data name="ToolWindowTitle" xml:space="preserve">
-    <value>DGML Filter View</value>
+    <value>DGML Autogrouping</value>
     <comment>Tool window title</comment>
   </data>
 </root>
