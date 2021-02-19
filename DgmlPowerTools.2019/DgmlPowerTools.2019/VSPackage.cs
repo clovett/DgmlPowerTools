@@ -5,21 +5,14 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
+using System.Threading;
+using Microsoft.VisualStudio.Progression;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
-using LovettSoftware.DgmlPowerTools;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.Progression;
-using System.Threading;
-using System.Runtime.CompilerServices;
 
 namespace LovettSoftware.DgmlPowerTools
 {
@@ -41,12 +34,12 @@ namespace LovettSoftware.DgmlPowerTools
     /// </para>
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable")]
-    // [ProvideAutoLoad(GuidList.DgmlPackageGuidString)] // Autoload when a graph document is opened.  (not supported in VS 2019).
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [Guid(GuidList.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideService(typeof(SProjectDependencies))]
     [ProvideToolWindow(typeof(FilterViewToolWindow))]
     public sealed class VSPackage : AsyncPackage, IGraphDocumentNotify, IVsPackageExtensionProvider
     {
@@ -77,6 +70,7 @@ namespace LovettSoftware.DgmlPowerTools
         public static Package Instance { get; set; }
 
         SelectionTracker _tracker;
+        Commands _globalCommands;
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -85,6 +79,13 @@ namespace LovettSoftware.DgmlPowerTools
         protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+
+            ServiceCreatorCallback callback = new ServiceCreatorCallback(CreateService);
+            ((IServiceContainer)this).AddService(typeof(SProjectDependencies), callback);
+
+            _globalCommands = new PackageCommands(this);
+
+            // GetServiceAsync does not work here, the progression package only supports Synchronous loading.
             IGraphDocumentManager mgr = GetService(typeof(IGraphDocumentManager)) as IGraphDocumentManager;
             if (mgr != null)
             {
@@ -99,6 +100,13 @@ namespace LovettSoftware.DgmlPowerTools
             OnGraphDocumentCreated(_tracker.ActiveWindow);
         }
 
+        private object CreateService(IServiceContainer container, Type serviceType)
+        {
+            if (typeof(SProjectDependencies) == serviceType)
+                return new ProjectDependencies();
+            return null;
+        }
+
         void OnActiveWindowChanged(object sender, ActiveWindowChangedEventArgs e)
         {
             OnGraphDocumentCreated(e.Window);
@@ -109,6 +117,10 @@ namespace LovettSoftware.DgmlPowerTools
             using (_tracker)
             {
                 _tracker = null;
+            }
+            using (_globalCommands)
+            {
+                _globalCommands = null;
             }
             base.Dispose(disposing);
         }

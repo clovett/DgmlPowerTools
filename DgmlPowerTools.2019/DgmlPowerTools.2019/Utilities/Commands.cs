@@ -16,102 +16,30 @@ namespace LovettSoftware.DgmlPowerTools
 {
     class Commands : IDisposable
     {
-        IGraphDocumentWindowPane graphWindow;
-        IServiceProvider serviceProvider;
-        NeighborhoodAnalyzer analyzer;
+        protected IServiceProvider serviceProvider;
 
-        public Commands(IGraphDocumentWindowPane window)
+        public Commands(IServiceProvider serviceProvider)
         {
-            serviceProvider = (IServiceProvider)window;
-            graphWindow = window;
-            analyzer = new NeighborhoodAnalyzer(graphWindow.Selection);
-            analyzer.Graph = window.Graph;
-            analyzer.NeighborhoodChanged += new EventHandler(OnNeighborhoodChanged);
-            window.GraphChanged += new EventHandler(OnGraphChanged);
-
-            CommandID commandId;
-
-            // compare graphs...
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidCompareGraphs);
-            DefineCommandHandler(new EventHandler(this.CompareGraphs_InvokeHandler), null,
-                new EventHandler(this.CompareGraphs_BeforeQueryStatus), commandId, null);
-
-            // hide internals
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidHideInternals);
-            DefineCommandHandler(new EventHandler(this.HideInternals_InvokeHandler), null,
-                new EventHandler(this.HideInternals_BeforeQueryStatus), commandId, null);
-
-            // cmdidSaveAsSvg
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidSaveAsSvg);
-            DefineCommandHandler(new EventHandler(this.SaveAsSvg_InvokeHandler), null,
-                new EventHandler(this.SaveAsSvg_BeforeQueryStatus), commandId, null);
-
-            // BrowseMode
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdIdGraph_Layout_NeighborhoodBrowseMode);
-            DefineCommandHandler(new EventHandler(this.NeighborhoodBrowseMode_InvokeHandler), null,
-                new EventHandler(this.NeighborhoodBrowseMode_BeforeQueryStatus), commandId, null);
-
-            // Neighborhood Distance commands
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdIdGraph_Layout_NeighborhoodDistance_Combo);
-            DefineCommandHandler(new EventHandler(this.NeighborhoodDistanceCombo_InvokeHandler), commandId, "$");
-
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdIdGraph_Layout_NeighborhoodDistance_ComboGetList);
-            DefineCommandHandler(new EventHandler(this.NeighborhoodDistanceComboGetList_InvokeHandler), commandId);
-
-            DefineCommandHandler(null, null, this.NeighborhoodBrowseMenu_BeforeQueryStatus,
-                new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.menuID_NeighborhoodDistance));
-
-            for (int i = PkgCmdIDList.cmdidNeighborhoodDistance1; i <= PkgCmdIDList.cmdidNeighborhoodDistanceAll; i++)
-            {
-                commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, i);
-                DefineCommandHandler(new EventHandler(this.NeighborhoodDistance_InvokeHandler), null,
-                    new EventHandler(this.NeighborhoodDistance_BeforeQueryStatus), commandId);
-            }
-
-            // Butterfly mode
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidButterflyMode);
-            DefineCommandHandler(new EventHandler(this.ButterflyMode_InvokeHandler), null,
-                new EventHandler(this.ButterflyMode_BeforeQueryStatus), commandId, null);
-
-            // filter view
-            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidDgmlFilterView);
-            DefineCommandHandler(new EventHandler(this.FilterView_InvokeHandler), null,
-                new EventHandler(this.FilterView_BeforeQueryStatus), commandId, null);
-
-
+            this.serviceProvider = serviceProvider;
         }
 
-        void OnNeighborhoodChanged(object sender, EventArgs e)
+        void IDisposable.Dispose()
         {
-            GraphControl control = this.GraphControl;
-            if (control != null && control.Diagram != null)
-            {
-                control.Diagram.RedoLayout();
-            }
+            Dispose(true);
         }
 
-        void OnGraphChanged(object sender, EventArgs e)
+        ~Commands()
         {
-            analyzer.Graph = graphWindow.Graph;
+            Dispose(false);
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            this.graphWindow.GraphChanged -= new EventHandler(OnGraphChanged);
-            this.graphWindow = null;
             this.serviceProvider = null;
-            this.analyzer = null;
         }
 
-        #region Helpers
 
-        private bool HasSelectedNodes
-        {
-            get
-            {                
-                return graphWindow.Selection.AsNodes().Any();
-            }
-        }
+        #region helpers
 
         protected T GetService<ST, T>()
             where ST : class
@@ -200,7 +128,25 @@ namespace LovettSoftware.DgmlPowerTools
 
         #endregion
 
-        #region Handlers
+    }
+
+    class PackageCommands : Commands
+    {
+        public PackageCommands(IServiceProvider serviceProvider) : base(serviceProvider)
+        {
+            // filter view
+            var commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidDgmlFilterView);
+            DefineCommandHandler(new EventHandler(this.FilterView_InvokeHandler), null,
+                new EventHandler(this.FilterView_BeforeQueryStatus), commandId, null);
+
+            // graph project dependencies
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidGraphProjectDependencies);
+            DefineCommandHandler(new EventHandler(this.GraphProjectDependencies_InvokeHandler), null,
+                new EventHandler(this.GraphProjectDependencies_BeforeQueryStatus), commandId, null);
+
+        }
+
+        #region handlers
 
         private void FilterView_BeforeQueryStatus(object sender, EventArgs e)
         {
@@ -215,7 +161,8 @@ namespace LovettSoftware.DgmlPowerTools
         }
 
         private void FilterView_InvokeHandler(object sender, EventArgs e)
-        {            
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
             // Get the command being executed
             OleMenuCommand oleMenuCommand = sender as OleMenuCommand;
             if (oleMenuCommand == null)
@@ -226,6 +173,153 @@ namespace LovettSoftware.DgmlPowerTools
             IVsWindowFrame window = pane.Frame as IVsWindowFrame;
             window.Show();
         }
+
+        private void GraphProjectDependencies_BeforeQueryStatus(object sender, EventArgs e)
+        {
+            OleMenuCommand oleMenuCommand = sender as OleMenuCommand;
+            if (oleMenuCommand == null)
+            {
+                return;
+            }
+            // Set the settings
+            oleMenuCommand.Supported = true;    // visible
+            oleMenuCommand.Enabled = true;      // enabled or disabled (gray)
+        }
+
+        private void GraphProjectDependencies_InvokeHandler(object sender, EventArgs e)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            // Get the command being executed
+            OleMenuCommand oleMenuCommand = sender as OleMenuCommand;
+            if (oleMenuCommand == null)
+            {
+                return;
+            }
+            try
+            {
+                ProjectDependencies generator = (ProjectDependencies)this.serviceProvider.GetService(typeof(SProjectDependencies));
+                Graph result = generator.GetProjectDependencies();
+
+                string resultPath = System.IO.Path.GetTempPath();
+                resultPath = System.IO.Path.Combine(resultPath, "projects.dgml");
+
+                result.Save(resultPath);
+                result = null;
+
+                ShellHelpers.OpenDocument(serviceProvider, resultPath);
+                IVsWindowPane pane = ShellHelpers.GetActiveDocumentWindowPane(serviceProvider);
+                if (pane != null)
+                {
+                    IGraphDocumentWindowPane graphWindow = (IGraphDocumentWindowPane)pane;
+                    Graph resultGraph = graphWindow.Graph;
+                    // todo: check the graph is correct!
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error opening new graph: " + ex.Message, "Unhandled Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+        }
+        #endregion
+    }
+
+    class WindowCommands : Commands
+    {
+        IGraphDocumentWindowPane graphWindow;
+        NeighborhoodAnalyzer analyzer;
+
+        public WindowCommands(IGraphDocumentWindowPane window) : base((IServiceProvider) window)
+        {
+            graphWindow = window;
+            analyzer = new NeighborhoodAnalyzer(graphWindow.Selection);
+            analyzer.Graph = window.Graph;
+            analyzer.NeighborhoodChanged += new EventHandler(OnNeighborhoodChanged);
+            window.GraphChanged += new EventHandler(OnGraphChanged);
+
+            CommandID commandId;
+
+            // compare graphs...
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidCompareGraphs);
+            DefineCommandHandler(new EventHandler(this.CompareGraphs_InvokeHandler), null,
+                new EventHandler(this.CompareGraphs_BeforeQueryStatus), commandId, null);
+
+            // hide internals
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidHideInternals);
+            DefineCommandHandler(new EventHandler(this.HideInternals_InvokeHandler), null,
+                new EventHandler(this.HideInternals_BeforeQueryStatus), commandId, null);
+
+            // cmdidSaveAsSvg
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidSaveAsSvg);
+            DefineCommandHandler(new EventHandler(this.SaveAsSvg_InvokeHandler), null,
+                new EventHandler(this.SaveAsSvg_BeforeQueryStatus), commandId, null);
+
+            // BrowseMode
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdIdGraph_Layout_NeighborhoodBrowseMode);
+            DefineCommandHandler(new EventHandler(this.NeighborhoodBrowseMode_InvokeHandler), null,
+                new EventHandler(this.NeighborhoodBrowseMode_BeforeQueryStatus), commandId, null);
+
+            // Neighborhood Distance commands
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdIdGraph_Layout_NeighborhoodDistance_Combo);
+            DefineCommandHandler(new EventHandler(this.NeighborhoodDistanceCombo_InvokeHandler), commandId, "$");
+
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdIdGraph_Layout_NeighborhoodDistance_ComboGetList);
+            DefineCommandHandler(new EventHandler(this.NeighborhoodDistanceComboGetList_InvokeHandler), commandId);
+
+            DefineCommandHandler(null, null, this.NeighborhoodBrowseMenu_BeforeQueryStatus,
+                new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.menuID_NeighborhoodDistance));
+
+            for (int i = PkgCmdIDList.cmdidNeighborhoodDistance1; i <= PkgCmdIDList.cmdidNeighborhoodDistanceAll; i++)
+            {
+                commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, i);
+                DefineCommandHandler(new EventHandler(this.NeighborhoodDistance_InvokeHandler), null,
+                    new EventHandler(this.NeighborhoodDistance_BeforeQueryStatus), commandId);
+            }
+
+            // Butterfly mode
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, PkgCmdIDList.cmdidButterflyMode);
+            DefineCommandHandler(new EventHandler(this.ButterflyMode_InvokeHandler), null,
+                new EventHandler(this.ButterflyMode_BeforeQueryStatus), commandId, null);
+
+        }
+
+        void OnNeighborhoodChanged(object sender, EventArgs e)
+        {
+            GraphControl control = this.GraphControl;
+            if (control != null && control.Diagram != null)
+            {
+                control.Diagram.RedoLayout();
+            }
+        }
+
+        void OnGraphChanged(object sender, EventArgs e)
+        {
+            analyzer.Graph = graphWindow.Graph;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            if (this.graphWindow != null)
+            {
+                this.graphWindow.GraphChanged -= new EventHandler(OnGraphChanged);
+            }
+            this.graphWindow = null;
+            this.analyzer = null;
+        }
+
+        #region Helpers
+
+        private bool HasSelectedNodes
+        {
+            get
+            {                
+                return graphWindow.Selection.AsNodes().Any();
+            }
+        }
+        #endregion
+
+        #region Handlers
 
         /// <summary>
         /// We have to respond to the menuID_NeighborhoodDistance in order to set the checked status on this menu
@@ -598,6 +692,7 @@ namespace LovettSoftware.DgmlPowerTools
 
         void CompareGraphs_InvokeHandler(object sender, EventArgs arguments)
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Graph original = this.graphWindow.Graph;
             if (original == null)
             {

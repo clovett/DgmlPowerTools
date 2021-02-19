@@ -33,14 +33,17 @@ namespace LovettSoftware.DgmlPowerTools
         internal void Initialize(System.IServiceProvider provider)
         {         
             IVsMonitorSelection monitorSelection = provider.GetService(typeof(IVsMonitorSelection)) as IVsMonitorSelection;
-
-            object currentValue;
-            if (0 == monitorSelection.GetCurrentElementValue((uint)Microsoft.VisualStudio.Shell.Interop.Constants.SEID_DocumentFrame, out currentValue))
+            if (monitorSelection != null)
             {
-                OnActiveWindowChanged(currentValue as IVsWindowFrame);
-            }
 
-            monitorSelection.AdviseSelectionEvents(this, out selectionCookie);
+                object currentValue;
+                if (0 == monitorSelection.GetCurrentElementValue((uint)Microsoft.VisualStudio.Shell.Interop.Constants.SEID_DocumentFrame, out currentValue))
+                {
+                    OnActiveWindowChanged(currentValue as IVsWindowFrame);
+                }
+
+                monitorSelection.AdviseSelectionEvents(this, out selectionCookie);
+            }
         }
 
         public IGraphDocumentWindowPane ActiveWindow

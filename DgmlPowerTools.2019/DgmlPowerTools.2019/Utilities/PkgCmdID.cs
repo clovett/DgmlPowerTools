@@ -10,6 +10,7 @@ namespace LovettSoftware.DgmlPowerTools
         public const int cmdidSaveAsSvg = 0x102;
         public const uint cmdidCompareGraphs = 0x103;
         public const uint cmdidHideInternals = 0x104;
+        public const int cmdidGraphProjectDependencies = 0x105;
 
         public const int menuID_NeighborhoodDistance = 0x3700;
         public const int cmdIdGraph_Layout_NeighborhoodBrowseMode = 0x2015;

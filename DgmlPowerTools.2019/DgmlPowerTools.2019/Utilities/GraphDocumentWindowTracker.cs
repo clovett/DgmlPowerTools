@@ -12,7 +12,7 @@ namespace LovettSoftware.DgmlPowerTools
         public GraphDocumentWindowTracker(IGraphDocumentWindowPane pane)
         {
             this.pane = pane;
-            commands = new Commands(pane);
+            commands = new WindowCommands(pane);
         }
 
         private GraphControl GraphControl

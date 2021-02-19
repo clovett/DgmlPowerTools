@@ -30,6 +30,7 @@ namespace LovettSoftware.DgmlPowerTools
         /// <returns></returns>
         public static IVsWindowPane GetActiveDocumentWindowPane(IServiceProvider provider)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsWindowFrame frame = GetActiveDocumentWindowFrame(provider);
             if (frame != null)
             {
@@ -49,6 +50,7 @@ namespace LovettSoftware.DgmlPowerTools
         /// <returns></returns>
         public static IVsWindowFrame GetActiveDocumentWindowFrame(IServiceProvider provider)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             IVsMonitorSelection selection = (IVsMonitorSelection)provider.GetService(typeof(SVsShellMonitorSelection));
             if (selection != null)
             {
@@ -65,6 +67,7 @@ namespace LovettSoftware.DgmlPowerTools
 
         public static void OpenDocument(IServiceProvider provider, string fileName)
         {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
             EnvDTE.DTE dte = provider.GetService(typeof(EnvDTE._DTE)) as EnvDTE.DTE;
             if (dte != null)
             {

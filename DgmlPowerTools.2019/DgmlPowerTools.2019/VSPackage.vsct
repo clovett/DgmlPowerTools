@@ -244,6 +244,20 @@
         </Strings>
       </Button>
 
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdidGraphProjectDependencies" priority="0x0300" type="Button">
+        <Annotation>
+          <Documentation>
+            Graph Project Dependencies
+          </Documentation>
+        </Annotation>
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_PROJ_OPTIONS"/>
+        <Icon guid="guidImages" id="bmpNewGraph" />
+        <Strings>
+          <ButtonText>Graph Project Dependencies</ButtonText>
+          <CanonicalName>DirectedGraph.ProjectDependencies</CanonicalName>
+          <LocCanonicalName>DirectedGraph.ProjectDependencies</LocCanonicalName>
+        </Strings>
+      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -253,7 +267,7 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used 
             inside a button definition. An important aspect of this declaration is that the element id 
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\Images.png" usedList="bmpIndex_Layout_NeighborhoodBrowseMode, bmpCompare, bmpFilter, bmpButterflyMode, bmpPicArrows, bmpPicStrikethrough"/>
+      <Bitmap guid="guidImages" href="Resources\Images.png" usedList="bmpIndex_Layout_NeighborhoodBrowseMode, bmpCompare, bmpFilter, bmpButterflyMode, bmpPicArrows, bmpPicStrikethrough, bmpNewGraph"/>
 
     </Bitmaps>
   </Commands>
@@ -293,7 +307,8 @@
       <IDSymbol name="cmdidDgmlFilterView" value="0x0101" />
       <IDSymbol name="cmdidSaveAsSvg" value="0x0102" />
       <IDSymbol name="cmdidCompareGraph" value="0x0103" />
-      <IDSymbol name="cmdidHideInternals" value="0x0104" />      
+      <IDSymbol name="cmdidHideInternals" value="0x0104" />
+      <IDSymbol name="cmdidGraphProjectDependencies" value="0x0105" />
 
       <IDSymbol name="cmdIdGraph_Layout_NeighborhoodBrowseMode"              value="0x2015"/>
       <IDSymbol name="cmdIdGraph_Layout_NeighborhoodDistance_Combo"  value="0x2016"/>
@@ -322,6 +337,7 @@
       <IDSymbol name="bmpButterflyMode" value="4" />
       <IDSymbol name="bmpPicArrows" value="5" />
       <IDSymbol name="bmpPicStrikethrough" value="6" />
+      <IDSymbol name="bmpNewGraph" value="7" />      
     </GuidSymbol>
   </Symbols>
 </CommandTable>
