@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29123.89
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlPowerTools.2022", "DgmlPowerTools.2022\DgmlPowerTools.2022.csproj", "{C68EAB37-D9E4-48ED-8606-030B6856F578}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDiff.2022", "..\GraphDiff\GraphDiff.2022.csproj", "{CD38C06C-CA6B-49C8-9038-81F718E3A230}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C68EAB37-D9E4-48ED-8606-030B6856F578}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C68EAB37-D9E4-48ED-8606-030B6856F578}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C68EAB37-D9E4-48ED-8606-030B6856F578}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C68EAB37-D9E4-48ED-8606-030B6856F578}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8F4097E2-9F8B-4EC3-9DCD-3E9D01915E11}
+	EndGlobalSection
+EndGlobal

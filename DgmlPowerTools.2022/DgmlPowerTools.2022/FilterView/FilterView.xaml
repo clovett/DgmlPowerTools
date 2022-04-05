@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="LovettSoftware.DgmlPowerTools.FilterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:LovettSoftware.DgmlPowerTools"
+             xmlns:platformUI="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             Background="{DynamicResource VsBrush.Window}"
+             Foreground="{DynamicResource VsBrush.WindowText}"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Name="MyToolWindow">
+    <UserControl.Resources>
+        <local:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter"/>
+        <!-- CloseBox -->
+        <SolidColorBrush x:Key="CloseBoxNormalBackground" Color="Gray"/>
+        <SolidColorBrush x:Key="CloseBoxNormalForeground" Color="White"/>
+        <SolidColorBrush x:Key="CloseBoxMousePressedBackground" Color="#DBC790"/>
+        <SolidColorBrush x:Key="CloseBoxMousePressedForeground" Color="Black"/>
+        <SolidColorBrush x:Key="CloseBoxMouseOverBackground" Color="#FFF7DE"/>
+        <SolidColorBrush x:Key="CloseBoxMouseOverForeground" Color="Black"/>
+
+        <DataTemplate x:Key="GroupItemTemplate">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <local:EditableTextBlock Label="{Binding Label, Mode=TwoWay}" FontSize="14" FontWeight="Bold"
+                                         Foreground="{DynamicResource VsBrush.WindowText}"
+                                         KeyDown="OnLabelKeyDown"  Margin="0,0,0,4"
+                                         MaxWidth="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
+                                         LabelChanged="OnLabelChanged" GotFocus="OnLabelGotFocus"/>
+                <local:EditableTextBlock Label="{Binding Expression, Mode=TwoWay}"  
+                                         Foreground="{DynamicResource VsBrush.WindowText}"
+                                         KeyDown="OnExpressionKeyDown" Margin="0,0,0,4" Grid.Row="1"
+                                         MaxWidth="{Binding Path=Width, RelativeSource={RelativeSource AncestorType=ListView, Mode=FindAncestor}}"
+                                         LabelChanged="OnExpressionChanged" GotFocus="OnLabelGotFocus"/>
+
+                <local:CloseBox HorizontalAlignment="Right" Margin="0,-3,15,0" Click="OnCloseClick"
+                                Visibility="{Binding IsSelected, Converter={StaticResource BooleanVisibilityConverter}}"/>
+            </Grid>
+        </DataTemplate>
+        <Style x:Key="CompactListStyle" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="1"/>
+        </Style>
+        <ContextMenu x:Key="CustomMenu">
+            <MenuItem Header="Move up" Click="OnMoveUp" InputGestureText="-"/>
+            <MenuItem Header="Move down" Click="OnMoveDown" InputGestureText="+"/>
+            <Separator/>
+            <MenuItem Header="Insert" Click="OnInsertItem" InputGestureText="Ins"/>
+            <MenuItem Header="Delete" Click="OnDeleteItem" InputGestureText="Del"/>
+            <Separator/>
+            <MenuItem Header="Save..." Click="OnSaveGroups"/>
+            <MenuItem Header="Load..." Click="OnLoadGroups"/>
+            <Separator/>
+            <MenuItem Header="Clear All" Click="OnClearList"/>
+        </ContextMenu>
+    </UserControl.Resources>
+    <DockPanel>
+
+        <Border Padding="2"  DockPanel.Dock="Top"  Background="{DynamicResource {x:Static platformUI:EnvironmentColors.CommandBarGradientBeginBrushKey}}" >
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <local:ToolbarButton x:Name="ApplyGroupsButton" Click="OnApplyGroups" ToolTip="Apply grouping" IconUri="Resources/ApplyGroups.png"/>
+                <local:ToolbarButton x:Name="RemoveGroupButton" Click="OnRemoveGroups" ToolTip="Remove groups" Grid.Column="1" IconUri="Resources/RemoveGroups.png"/>
+                <local:ToolbarButton x:Name="DeleteButton" Click="OnDeleteClick" ToolTip="Delete item" Grid.Column="2" IconUri="Resources/Clear.png"/>
+                <local:ToolbarButton x:Name="AddButton" Click="OnMoreClick" ToolTip="More" Grid.Column="3" IconUri="Resources/More.png"/>
+            </Grid>
+        </Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+            </Grid>
+            <ListView x:Name="FilterList" Grid.Row="1" ItemTemplate="{StaticResource GroupItemTemplate}" Padding="0"
+                      ItemContainerStyle="{StaticResource CompactListStyle}" Focusable="True" SelectionMode="Single"
+                      SelectionChanged="OnItemSelected"
+                      BorderThickness="0"
+                      HorizontalAlignment="Left"
+                      Width="200"
+                      Background="{DynamicResource VsBrush.ToolWindowBackground}"                      
+                      Foreground="{DynamicResource VsBrush.ToolWindowText}"
+                      KeyDown="OnListKeyDown" 
+                      ContextMenu="{StaticResource CustomMenu}"
+                      PreviewMouseRightButtonDown="ListView_PreviewMouseRightButtonDown">
+
+            </ListView>
+        </Grid>
+    </DockPanel>
+</UserControl>
