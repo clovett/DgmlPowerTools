@@ -55,6 +55,10 @@
         <Parent guid="guidGraphPackageCmdSet" id="menuID_Context" />
       </Group>
 
+      <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_Dependencies" priority="0x0600">
+        <Parent guid="guidGraphPackageCmdSet" id="menuID_Context" />
+      </Group>
+
       <!-- Neighborhood distance submenu group -->
       <Group guid="guidDgmlPowerToolsCmdSet" id="groupID_NeighborhoodDistance" priority="0x0000">
         <Parent guid="guidDgmlPowerToolsCmdSet" id="menuID_NeighborhoodDistance" />
@@ -83,6 +87,15 @@
         <Icon guid="guidImages" id="bmpCompare" />
         <Strings>
           <ButtonText>Compare with another graph...</ButtonText>
+        </Strings>
+      </Button>
+      
+      <Button guid="guidDgmlPowerToolsCmdSet" id="cmdIdExpandReferencedAssemblies" priority="0x0030" type="Button">
+        <Parent guid="guidDgmlPowerToolsCmdSet" id="groupID_Dependencies" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <Strings>
+          <ButtonText>Add Dependent Assemblies</ButtonText>
         </Strings>
       </Button>
 
@@ -288,8 +301,9 @@
       <IDSymbol name="groupID_Extras"              value="0x1050"/>
       <IDSymbol name="groupID_SaveAs"              value="0x1216"/>
       <IDSymbol name="menuID_Context"              value="0x3100"/>
-      <IDSymbol name="groupID_HideSelection"       value="0x1027"/>
+      <IDSymbol name="groupID_HideSelection"       value="0x1027"/>      
     </GuidSymbol>
+
 
     <!-- This is the package guid. -->
     <GuidSymbol name="guidVSPackage" value="{2517bb47-303a-4633-a65e-86867c9e6bcb}" />
@@ -300,6 +314,7 @@
       <IDSymbol name="menuID_NeighborhoodDistance" value="0x3700"/>
  
       <IDSymbol name="groupID_GraphDiff" value="0x1020" />
+      <IDSymbol name="groupID_Dependencies" value="0x6220"/>
       <IDSymbol name="groupID_NeighborhoodDistance"      value="0x1021"/>
       <IDSymbol name="groupID_NeighborhoodDistanceAll"   value="0x1022"/>
 
@@ -309,6 +324,7 @@
       <IDSymbol name="cmdidCompareGraph" value="0x0103" />
       <IDSymbol name="cmdidHideInternals" value="0x0104" />
       <IDSymbol name="cmdidGraphProjectDependencies" value="0x0105" />
+      <IDSymbol name="cmdIdExpandReferencedAssemblies" value="0xE550" />
 
       <IDSymbol name="cmdIdGraph_Layout_NeighborhoodBrowseMode"              value="0x2015"/>
       <IDSymbol name="cmdIdGraph_Layout_NeighborhoodDistance_Combo"  value="0x2016"/>
@@ -324,7 +340,6 @@
       <IDSymbol name="cmdidNeighborhoodDistanceAll"  value="0x2457"/>
 
       <IDSymbol name="cmdidButterflyMode"            value="0x2460"/>
-
 
       <IDSymbol name="cmdidNeighborhoodBrowseMode" value="0x0100" />
     </GuidSymbol>

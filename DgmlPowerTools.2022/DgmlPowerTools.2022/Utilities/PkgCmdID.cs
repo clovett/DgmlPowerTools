@@ -12,6 +12,8 @@ namespace LovettSoftware.DgmlPowerTools
         public const uint cmdidHideInternals = 0x104;
         public const int cmdidGraphProjectDependencies = 0x105;
 
+        public static int cmdIdExpandReferencedAssemblies = 0xE550;
+
         public const int menuID_NeighborhoodDistance = 0x3700;
         public const int cmdIdGraph_Layout_NeighborhoodBrowseMode = 0x2015;
         public const int cmdIdGraph_Layout_NeighborhoodDistance_Combo = 0x2016;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="DgmlPowerTools._2022.b1034e63-aefd-41f1-87fa-75767c8e2dd1" Version="2.0.8" Language="en-US" Publisher="Chris Lovett" />
+        <Identity Id="DgmlPowerTools._2022.b1034e63-aefd-41f1-87fa-75767c8e2dd1" Version="2.0.9" Language="en-US" Publisher="Chris Lovett" />
         <DisplayName>DgmlPowerTools 2022</DisplayName>
         <Description xml:space="preserve">DGML Power Tools is a VSIX package for Visual Studio 2022 that adds a bunch of handy new DGML related features, including neighborhood and butterfly modes, export to SVG, Drag/Drop of images, Graph Diff, and auto grouping.</Description>
         <MoreInfo>https://lovettsoftware.com</MoreInfo>
@@ -12,9 +12,9 @@
         <Tags>DGML</Tags>
     </Metadata>
     <Installation>
-      <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community">
-        <ProductArchitecture>amd64</ProductArchitecture>
-      </InstallationTarget>
+        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community">
+            <ProductArchitecture>amd64</ProductArchitecture>
+        </InstallationTarget>
     </Installation>
     <Dependencies>
         <Dependency d:Source="Installed" Id="Microsoft.VisualStudio.MPF.17.0" DisplayName="Visual Studio MPF 17.0" Version="[17.0,18.0)" />

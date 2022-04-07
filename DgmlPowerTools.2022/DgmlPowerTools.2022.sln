@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29123.89
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DgmlPowerTools.2022", "DgmlPowerTools.2022\DgmlPowerTools.2022.csproj", "{C68EAB37-D9E4-48ED-8606-030B6856F578}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphDiff.2022", "..\GraphDiff\GraphDiff.2022.csproj", "{CD38C06C-CA6B-49C8-9038-81F718E3A230}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Providers", "..\Providers\Providers.csproj", "{C3A12501-3BC0-4B45-A7C2-176038961879}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD38C06C-CA6B-49C8-9038-81F718E3A230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3A12501-3BC0-4B45-A7C2-176038961879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3A12501-3BC0-4B45-A7C2-176038961879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3A12501-3BC0-4B45-A7C2-176038961879}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3A12501-3BC0-4B45-A7C2-176038961879}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

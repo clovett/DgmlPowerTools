@@ -49,7 +49,7 @@ Notice the difference between the two graphs is that butterfly mode removed the 
 
 Simply drag images from Windows Explorer onto the canvas so you can wire them up with links and groups and quickly create some really nice looking diagrams.
 
-In fact you can drag any file on to the canvas to get a node with a Reference attribute pointing at that file  
+In fact you can drag any file on to the canvas to get a node with a Reference attribute pointing at that file
 (which is then handy for “Goto->Reference” command).
 
 ### Graph Diff
@@ -78,7 +78,7 @@ The following is the result when you apply this grouping information (see [group
 
 ### **Graph Project Dependencies**
 
-This handy command can be found under the VS Project menu and will produce a DGML graph showing all the project dependencies in one graph.  Combined with the neighborhood view you can easily restrict the graph to a single project you care about.  For example, the project dependencies for the [XML Notepad](https://github.com/microsoft/xmlnotepad) project look like this:
+This handy command can be found under the VS Project menu and will produce a DGML graph showing all the project dependencies in one graph including any PackageReferences.  Combined with the neighborhood view you can easily restrict the graph to a single project you care about.  For example, the project dependencies for the [XML Notepad](https://github.com/microsoft/xmlnotepad) project look like this:
 
 ![image.png](Artwork/image.png)
 
@@ -120,4 +120,3 @@ This handy command can be found under the VS Project menu and will produce a DGM
 
 Load the solution in `DgmlPowerTools.2019\DgmlPowerTools.2019.sln` and build.
 Press F5 to run the extension in the VS experimental hive.
-

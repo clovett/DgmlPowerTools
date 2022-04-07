@@ -11,6 +11,12 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.ComponentModel.Composition;
+using NodeCategories = Microsoft.VisualStudio.Progression.CodeSchema.NodeCategories;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.GraphProviders;
+using Microsoft.VisualStudio.ComponentModelHost;
+using System.ComponentModel.Composition.Hosting;
 
 namespace LovettSoftware.DgmlPowerTools
 {
@@ -197,8 +203,9 @@ namespace LovettSoftware.DgmlPowerTools
             }
             try
             {
+                IVsSolution solution = GetService<SVsSolution, IVsSolution>();
                 ProjectDependencies generator = (ProjectDependencies)this.serviceProvider.GetService(typeof(SProjectDependencies));
-                Graph result = generator.GetProjectDependencies();
+                Graph result = generator.GetProjectDependencies(solution);
 
                 string resultPath = System.IO.Path.GetTempPath();
                 resultPath = System.IO.Path.Combine(resultPath, "projects.dgml");
@@ -228,6 +235,8 @@ namespace LovettSoftware.DgmlPowerTools
     {
         IGraphDocumentWindowPane graphWindow;
         NeighborhoodAnalyzer analyzer;
+        [ImportMany(typeof(IGraphDependencyProvider))]
+        private IEnumerable<IGraphDependencyProvider> _providers = null;
 
         public WindowCommands(IGraphDocumentWindowPane window) : base((IServiceProvider) window)
         {
@@ -237,12 +246,25 @@ namespace LovettSoftware.DgmlPowerTools
             analyzer.NeighborhoodChanged += new EventHandler(OnNeighborhoodChanged);
             window.GraphChanged += new EventHandler(OnGraphChanged);
 
+            AggregateCatalog catalog = new AggregateCatalog(
+                new AssemblyCatalog(typeof(IGraphDependencyProvider).Assembly));
+            var compositionContainer = new CompositionContainer(catalog); 
+            var batch = new CompositionBatch();
+            batch.AddPart(this);
+            compositionContainer.Compose(batch);
+
             CommandID commandId;
 
             // compare graphs...
             commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidCompareGraphs);
             DefineCommandHandler(new EventHandler(this.CompareGraphs_InvokeHandler), null,
                 new EventHandler(this.CompareGraphs_BeforeQueryStatus), commandId, null);
+
+            // add assembly dependencies
+            commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdIdExpandReferencedAssemblies);
+            DefineCommandHandler(new EventHandler(this.AddDependentAssemblies_InvokeHandler), null,
+                new EventHandler(this.AddDependentAssemblies_BeforeQueryStatus), commandId, null);
+
 
             // hide internals
             commandId = new CommandID(GuidList.guidDgmlPowerToolsCmdSet, (int)PkgCmdIDList.cmdidHideInternals);
@@ -317,6 +339,12 @@ namespace LovettSoftware.DgmlPowerTools
                 return graphWindow.Selection.AsNodes().Any();
             }
         }
+
+        private bool HasSelectedNodeWithCategory(GraphCategory c)
+        {
+            return graphWindow.Selection.AsNodes().Any((n) => n.HasCategory(c));
+        }
+
         #endregion
 
         #region Handlers
@@ -644,6 +672,91 @@ namespace LovettSoftware.DgmlPowerTools
             }
         }
 
+        #endregion
+
+        #region Add Dependent Assemblies
+        private void AddDependentAssemblies_BeforeQueryStatus(object sender, EventArgs arguments)
+        {
+            // Get the command being queried
+            OleMenuCommand oleMenuCommand = sender as OleMenuCommand;
+            if (oleMenuCommand == null || graphWindow == null)
+            {
+                return;
+            }
+
+            if (graphWindow.GraphType == WindowGraphType.CodeMap || graphWindow.GraphType == WindowGraphType.DebuggerMap)
+            {
+                // Code map has it's own implementation of this command.
+                oleMenuCommand.Supported = true;
+                oleMenuCommand.Enabled = false;
+                oleMenuCommand.Checked = false;
+                return;
+            }
+
+            GraphControl control = GraphControl;
+            var expandableNodes = from n in graphWindow.Selection.AsNodes()
+                                  where n.HasCategory(CodeNodeCategories.Assembly) || n.HasCategory(NodeCategories.Assembly) || 
+                                        n.HasValue(Microsoft.VisualStudio.Progression.DgmlProperties.FilePath) ||
+                                        QualifiedNameContainsFile(n.Id)
+                                  select n;
+
+            // Only enabled if we have a visible graph with selected node of type Assembly.
+            oleMenuCommand.Enabled = !(control.IsSplashScreenVisible || control.IsLayoutProgressVisible) && expandableNodes.Any();
+            oleMenuCommand.Supported = oleMenuCommand.Enabled;
+            oleMenuCommand.Checked = false;
+        }
+
+        bool QualifiedNameContainsFile(GraphNodeId id)
+        {
+            var part = id.GetNestedIdByName(CodeGraphNodeIdName.Assembly);
+            if (part != null)
+            {
+                return true;
+            }
+            part = id.GetNestedIdByName(CodeGraphNodeIdName.File);
+            if (part != null)
+            {
+                return true;
+            }
+
+            GraphNodeIdName filePathName = GraphNodeIdName.Get("FilePath", "FilePath", typeof(string));
+            part = id.GetNestedIdByName(filePathName);
+            if (part != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+
+        void AddDependentAssemblies_InvokeHandler(object sender, EventArgs arguments)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            Graph original = this.graphWindow.Graph;
+            if (original == null)
+            {
+                return;
+            }
+
+            var expandableNodes = from n in graphWindow.Selection.AsNodes()
+                                  where n.HasCategory(CodeNodeCategories.Assembly) || n.HasCategory(NodeCategories.Assembly) ||
+                                        n.HasValue(Microsoft.VisualStudio.Progression.DgmlProperties.FilePath) ||
+                                        QualifiedNameContainsFile(n.Id)
+                                  select n;
+
+            if (_providers != null && expandableNodes.Any())
+            {
+                using (var scope = new UndoableGraphTransactionScope("Add Dependencies"))
+                {
+                    foreach (var p in this._providers)
+                    {
+                        p.ExpandDependencies(expandableNodes, 1);
+                    }
+                    scope.Complete();
+                }
+            }
+        }
+
         #endregion 
 
         #region Compare Graphs
@@ -688,7 +801,6 @@ namespace LovettSoftware.DgmlPowerTools
 
             return result;
         }
-
 
         void CompareGraphs_InvokeHandler(object sender, EventArgs arguments)
         {

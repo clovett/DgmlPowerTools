@@ -155,7 +155,11 @@ namespace LovettSoftware.DgmlPowerTools
                         node.Label = "";
                     }
                     else if (string.Compare(extension, ".exe", StringComparison.OrdinalIgnoreCase) == 0 ||
-                        string.Compare(extension, ".dll", StringComparison.OrdinalIgnoreCase) == 0)
+                        string.Compare(extension, ".dll", StringComparison.OrdinalIgnoreCase) == 0 ||
+                        string.Compare(extension, ".csproj", StringComparison.OrdinalIgnoreCase) == 0 ||
+                        string.Compare(extension, ".vbproj", StringComparison.OrdinalIgnoreCase) == 0 ||
+                        string.Compare(extension, ".proj", StringComparison.OrdinalIgnoreCase) == 0 ||
+                        string.Compare(extension, ".sln", StringComparison.OrdinalIgnoreCase) == 0)
                     {
                         node.SetValue<string>(DgmlProperties.FilePath, file);
                     }

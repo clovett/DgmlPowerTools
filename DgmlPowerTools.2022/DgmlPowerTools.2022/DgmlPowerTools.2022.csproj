@@ -200,6 +200,10 @@
       <Project>{cd38c06c-ca6b-49c8-9038-81f718e3a230}</Project>
       <Name>GraphDiff.2022</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Providers\Providers.csproj">
+      <Project>{c3a12501-3bc0-4b45-a7c2-176038961879}</Project>
+      <Name>Providers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

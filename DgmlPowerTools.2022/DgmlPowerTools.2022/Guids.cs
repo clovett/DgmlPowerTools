@@ -12,5 +12,7 @@ namespace LovettSoftware.DgmlPowerTools
         public const string guidToolWindowPersistanceString = "c47640de-1f4a-4c9c-a834-c9bf0707fc36";
 
         public static readonly Guid guidDgmlPowerToolsCmdSet = new Guid(guidDgmlPowerToolsCmdSetString);
+
+        public static readonly Guid guidArchitectureExplorerPackageCmdSet = new Guid("14bca3af-5e27-4307-8492-84af8647ea7c");
     };
 }
