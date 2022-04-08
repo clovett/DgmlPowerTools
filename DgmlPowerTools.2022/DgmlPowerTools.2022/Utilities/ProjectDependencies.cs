@@ -225,22 +225,21 @@ namespace LovettSoftware.DgmlPowerTools
                     string name = (string)e.Attribute("Include");
                     if (!string.IsNullOrEmpty(name))
                     {
-                        string nugetVersionAttribute = (string)e.Attribute(ns + "Version");
-                        if (string.IsNullOrEmpty(nugetVersionAttribute))
+                        string nugetVersion = (string)e.Attribute(ns + "Version");
+                        if (string.IsNullOrEmpty(nugetVersion))
                         {
-                            nugetVersionAttribute = (string)e.Element(ns + "Version");
+                            nugetVersion = (string)e.Element(ns + "Version");
                         }
                         string id = name;
                         string label = name;
-                        Version nugetVersion = null;
-                        if (!string.IsNullOrEmpty(nugetVersionAttribute) && Version.TryParse(nugetVersionAttribute, out nugetVersion))
+                        if (!string.IsNullOrEmpty(nugetVersion))
                         {
                             id += "-" + nugetVersion;
                         }
 
                         GraphNode nugetNode = graph.Nodes.GetOrCreate(id, label, CodeNodeCategories.Assembly);
-                        if (nugetVersion != null) {
-                            nugetNode.SetValue(versionProp, nugetVersion.ToString());
+                        if (!string.IsNullOrEmpty(nugetVersion)) {
+                            nugetNode.SetValue(versionProp, nugetVersion);
                         }
                         graph.Links.GetOrCreate(sourceProjectNode, nugetNode);
 
