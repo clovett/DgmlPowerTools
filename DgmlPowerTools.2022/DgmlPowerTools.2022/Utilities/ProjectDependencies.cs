@@ -11,10 +11,9 @@ using Microsoft.VisualStudio.Progression.CodeSchema;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-using CodeNodeCategories = Microsoft.VisualStudio.Progression.CodeSchema.NodeCategories;
 using CodeNodeProperties = Microsoft.VisualStudio.Progression.CodeSchema.Properties;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Windows.Media;
 using Microsoft.VisualStudio.Shell.Flavor;
 
 namespace LovettSoftware.DgmlPowerTools
@@ -29,7 +28,10 @@ namespace LovettSoftware.DgmlPowerTools
     }
 
     class ProjectDependencies : SProjectDependencies, IProjectDependencies
-    {        
+    {
+        private const string PropNameNugetVersion = "Nuget-Version";
+        private const string PackageReferenceCategory = "DgmlPowerTool_PackageReference";
+
         private Dictionary<string, GraphCategory> _categories = new Dictionary<string, GraphCategory>();
         private Dictionary<string, GraphConditionalStyle> _projectStyles;        
 
@@ -37,6 +39,7 @@ namespace LovettSoftware.DgmlPowerTools
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             var graph = new Graph();
+            _categories = new Dictionary<string, GraphCategory>();
             _projectStyles = new Dictionary<string, GraphConditionalStyle>();
 
             using (var scope = graph.BeginUpdate(Guid.NewGuid(), "initial", UndoOption.Disable))
@@ -46,9 +49,12 @@ namespace LovettSoftware.DgmlPowerTools
                 GraphSchema custom = new GraphSchema("DgmlPowerTool");
                 graph.AddSchema(custom);
 
-                AddCategoryStyle(graph, CodeNodeCategories.Assembly, "#FF094167", "CodeSchema_Assembly");
+                // create package reference category with its style
+                var category = custom.RegisterNodeCategory(PackageReferenceCategory, "Package Reference", "PackagesReferences", false);
+                _categories.Add(PackageReferenceCategory, category);
+                AddCategoryStyle(graph, category, "#FF094167", "CodeSchema_Assembly");
 
-                GraphProperty versionProperty = CodeGraphSchema.Schema.Properties.AddNewProperty("Version", typeof(string),
+                GraphProperty versionProperty = CodeGraphSchema.Schema.Properties.AddNewProperty(PropNameNugetVersion, typeof(string),
                     () => {
                         var meta = new GraphMetadata("Version", "Nuget package version", null, GraphMetadataOptions.Serializable | GraphMetadataOptions.Browsable | GraphMetadataOptions.Sharable);
                         meta.SetValue(CodeNodeProperties.IsBrowsable, "True");
@@ -204,10 +210,6 @@ namespace LovettSoftware.DgmlPowerTools
             {
                 Value = color
             });
-            style.Setters.Add(new GraphSetter(style, "Stroke")
-            {
-                Value = color
-            });
             style.Setters.Add(new GraphSetter(style, "Icon")
             {
                 Value = icon
@@ -216,7 +218,7 @@ namespace LovettSoftware.DgmlPowerTools
             return style;
         }
 
-        private static void CreateNugetReferences(string sourceProjectFullName, Graph graph, GraphNode sourceProjectNode, GraphProperty versionProp)
+        private void CreateNugetReferences(string sourceProjectFullName, Graph graph, GraphNode sourceProjectNode, GraphProperty versionProp)
         {
             try
             {
@@ -227,25 +229,33 @@ namespace LovettSoftware.DgmlPowerTools
                     string name = (string)e.Attribute("Include");
                     if (!string.IsNullOrEmpty(name))
                     {
-                        string version = (string)e.Attribute(ns + "Version");
-                        if (string.IsNullOrEmpty(version))
+                        string nugetVersion = (string)e.Attribute(ns + "Version");
+                        if (string.IsNullOrEmpty(nugetVersion))
                         {
-                            version = (string)e.Element(ns + "Version");
+                            nugetVersion = (string)e.Element(ns + "Version");
                         }
                         string id = name;
                         string label = name;
-                        Version v = null;
-                        if (!string.IsNullOrEmpty(version) && Version.TryParse(version, out v))
+                        if (!string.IsNullOrEmpty(nugetVersion))
                         {
-                            id += "-" + v.ToString();
-                            //label += $"\n{v}";
+                            id += "-" + nugetVersion;
                         }
 
-                        GraphNode nugetNode = graph.Nodes.GetOrCreate(id, label, CodeNodeCategories.Assembly);
-                        if (v != null) {
-                            nugetNode.SetValue(versionProp, v.ToString());
+                        GraphNode nugetNode = graph.Nodes.GetOrCreate(id, label, _categories[PackageReferenceCategory]);
+                        if (!string.IsNullOrEmpty(nugetVersion)) {
+                            nugetNode.SetValue(versionProp, nugetVersion);
                         }
                         graph.Links.GetOrCreate(sourceProjectNode, nugetNode);
+
+                        // check for inconsistent version and mark them with a red border
+                        foreach (var existingNugetNode in graph.Nodes.Where(n => n.Categories.Contains(_categories[PackageReferenceCategory])))
+                        {
+                            if (nugetNode.Label == existingNugetNode.Label && nugetNode.Id != existingNugetNode.Id)
+                            {
+                                nugetNode.SetStroke(Brushes.Red);
+                                existingNugetNode.SetStroke(Brushes.Red);
+                            }
+                        }
                     }
                 }
             } 
