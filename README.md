@@ -13,13 +13,27 @@ See [DgmlPowerTools Nuget package ](https://marketplace.visualstudio.com/items?i
 See [https://github.com/clovett/DgmlPowerTools](https://github.com/clovett/DgmlPowerTools).
 
 
-### Save as SVG
+## **Graph Project Dependencies**
+
+This handy command can be found under the VS Project menu and will produce a DGML graph showing all the project dependencies in one graph including any PackageReferences.  Combined with the neighborhood view you can easily restrict the graph to a single project you care about.  For example, the project dependencies for the  [MyMoney.Net](https://github.com/clovett/MyMoney.Net) projects look like this:
+
+![image.png](Artwork/image.png)
+
+Notice that it highlights in red any package dependency version conflicts.
+
+## **Add Dependent Assemblies**
+
+If you drop a random .dll onto a new Directed Graph Document, you can now expand all it's dependent assemblies using this new context menu item:
+
+![image.png](Artwork/dependents.png)
+
+## Save as SVG
 
 ![screen1.png](Artwork/screen1.png)
 
 You will see the "Save as SVG" command in the Share menu on the Directed Graph Document toolbar.
 
-### Neighborhood mode
+## Neighborhood mode
 
 ![image1.png](Artwork/image1.png)
 
@@ -33,7 +47,7 @@ In this case if you only care about one degree of freedom from the selected node
 
 ![screen10.png](Artwork/screen10.png)
 
-### Butterfly mode
+## Butterfly mode
 
 ![image2.png](Artwork/image2.png)
 
@@ -43,7 +57,7 @@ On the Directed Graph Document toolbar this command removes cycles in the graph 
 
 Notice the difference between the two graphs is that butterfly mode removed the cycles so you can see a clean picture of incoming and outgoing dependencies relative to the selected node.   Butterly also ensures that the arrows flow in the same direction which makes seeing the dependencies a lot easier.  Just note that in removing cycles there may be some missing circular dependencies which you won't discover until you move the center of the butterfly.
 
-### Windows Drag/Drop 
+## Windows Drag/Drop 
 
 ![screen4.png](Artwork/screen4.png)
 
@@ -52,7 +66,7 @@ Simply drag images from Windows Explorer onto the canvas so you can wire them up
 In fact you can drag any file on to the canvas to get a node with a Reference attribute pointing at that file
 (which is then handy for “Goto->Reference” command).
 
-### Graph Diff
+## Graph Diff
 
 You will see the graph compare command in the Directed Graph Document context menu:
 
@@ -62,7 +76,7 @@ This command compares your current graph with another and then loads the result 
 
 ![graphdiff.png](Artwork/graphdiff.png)
 
-### DGML Autogrouping
+## DGML Autogrouping
 
 ![image3.png](Artwork/image3.png)
 
@@ -76,16 +90,15 @@ The following is the result when you apply this grouping information (see [group
 
 ![grouped.png](Artwork/grouped.png)
 
-### **Graph Project Dependencies**
+## **Change History**
 
-This handy command can be found under the VS Project menu and will produce a DGML graph showing all the project dependencies in one graph including any PackageReferences.  Combined with the neighborhood view you can easily restrict the graph to a single project you care about.  For example, the project dependencies for the [XML Notepad](https://github.com/microsoft/xmlnotepad) project look like this:
+2.0.10 Some nice improvements to package dependencies  from 'zplan'.
 
-![image.png](Artwork/image.png)
+2.0.9 Add nuget package dependencies to project dependencies diagram (special thanks to PR from 'zplan').  Also added new "Add Dependent Assemblies" menu item on context menu.
 
-### **Change History**
+2.0.8 Add VS 2022 version.
 
 2.0.7 Add 'Graph Project Dependencies' under the VS Project menu.
-
 
 2.0.6 Add new DGML grouping view context menu items for move up, move down, insert, delete. Add regex support to DGML grouping, regex is identified by "/.../" delimiters on the term. Fix some layout issues in DGML grouping view so that long text wraps nicely.
 
@@ -118,5 +131,5 @@ This handy command can be found under the VS Project menu and will produce a DGM
 
 # Build and Test
 
-Load the solution in `DgmlPowerTools.2019\DgmlPowerTools.2019.sln` and build.
+Load the solution in `DgmlPowerTools.2022\DgmlPowerTools.2022.sln` and build.
 Press F5 to run the extension in the VS experimental hive.
