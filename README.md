@@ -15,7 +15,7 @@ See [https://github.com/clovett/DgmlPowerTools](https://github.com/clovett/DgmlP
 
 ## **Graph Project Dependencies**
 
-This handy command can be found under the VS Project menu and will produce a DGML graph showing all the project dependencies in one graph including any PackageReferences.  Combined with the neighborhood view you can easily restrict the graph to a single project you care about.  For example, the project dependencies for the  [MyMoney.Net](https://github.com/clovett/MyMoney.Net) projects look like this:
+This handy command can be found under the VS Project menu and will produce a DGML graph showing all the project dependencies in one graph including any PackageReferences.  Combined with the neighborhood view you can easily restrict the graph to a single project you care about.  For example, the project dependencies for the  [MyMoney.Net](https://github.com/clovett/MyMoney.Net) solution look like this:
 
 ![image.png](Artwork/image.png)
 
