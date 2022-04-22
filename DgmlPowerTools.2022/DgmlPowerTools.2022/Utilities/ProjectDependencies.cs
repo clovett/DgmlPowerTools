@@ -88,7 +88,7 @@ namespace LovettSoftware.DgmlPowerTools
                         GraphCategory projectCategory = GetOrCreateProjectCategoryStyle(graph, custom, kind);
                         GraphNode sourceProjectNode = graph.Nodes.GetOrCreate(id, label, projectCategory);
 
-                        CreateNugetReferences(sourceProject.FullName, graph, sourceProjectNode, versionProperty);
+                        CreateNugetReferences(sourceProject.FullName, graph, custom, sourceProjectNode, versionProperty);
 
                         object[] req = sourceItem.RequiredProjects as object[];
                         if (req != null)
@@ -194,7 +194,28 @@ namespace LovettSoftware.DgmlPowerTools
             return category;
         }
 
-        private static GraphConditionalStyle AddCategoryStyle(Graph graph, GraphCategory category, string color, string icon)
+        GraphCategory GetOrCreateConflictCategoryStyle(Graph graph, GraphSchema schema)
+        {
+            string categoryName = "VersionConflict";
+            _categories.TryGetValue(categoryName, out GraphCategory category);
+            if (category == null)
+            {
+                string label = categoryName;
+                category = schema.RegisterNodeCategory(categoryName, label, label, false, null);
+                _categories[categoryName] = category;
+            }
+
+            // make sure this graph has the style
+            if (!_projectStyles.TryGetValue(categoryName, out GraphConditionalStyle style))
+            {
+                style = AddCategoryStyle(graph, category, stroke:"red", strokeThickness:1);
+                _projectStyles[categoryName] = style;
+            }
+
+            return category;
+        }
+
+        private static GraphConditionalStyle AddCategoryStyle(Graph graph, GraphCategory category, string backgroundColor = null, string icon = null, string stroke = null, double? strokeThickness = null)
         {
             var style = new GraphConditionalStyle(graph)
             {
@@ -206,19 +227,40 @@ namespace LovettSoftware.DgmlPowerTools
             {
                 Expression = $"HasCategory('{category.Id}')"
             });
-            style.Setters.Add(new GraphSetter(style, "Background")
+
+            if (!string.IsNullOrEmpty(backgroundColor))
             {
-                Value = color
-            });
-            style.Setters.Add(new GraphSetter(style, "Icon")
+                style.Setters.Add(new GraphSetter(style, "Background")
+                {
+                    Value = backgroundColor
+                });
+            }
+            if (!string.IsNullOrEmpty(stroke))
             {
-                Value = icon
-            });
+                style.Setters.Add(new GraphSetter(style, "Stroke")
+                {
+                    Value = stroke
+                });
+            }
+            if (strokeThickness.HasValue)
+            {
+                style.Setters.Add(new GraphSetter(style, "StrokeThickness")
+                {
+                    Value = strokeThickness.Value.ToString()
+                });
+            }
+            if (!string.IsNullOrEmpty(icon))
+            {
+                style.Setters.Add(new GraphSetter(style, "Icon")
+                {
+                    Value = icon
+                });
+            }
             graph.Styles.Add(style);
             return style;
         }
 
-        private void CreateNugetReferences(string sourceProjectFullName, Graph graph, GraphNode sourceProjectNode, GraphProperty versionProp)
+        private void CreateNugetReferences(string sourceProjectFullName, Graph graph, GraphSchema schema, GraphNode sourceProjectNode, GraphProperty versionProp)
         {
             try
             {
@@ -252,8 +294,9 @@ namespace LovettSoftware.DgmlPowerTools
                         {
                             if (nugetNode.Label == existingNugetNode.Label && nugetNode.Id != existingNugetNode.Id)
                             {
-                                nugetNode.SetStroke(Brushes.Red);
-                                existingNugetNode.SetStroke(Brushes.Red);
+                                var conflict = GetOrCreateConflictCategoryStyle(graph, schema);
+                                nugetNode.AddCategory(conflict);
+                                existingNugetNode.AddCategory(conflict);
                             }
                         }
                     }

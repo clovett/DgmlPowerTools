@@ -93,7 +93,7 @@ namespace Microsoft.VisualStudio.GraphProviders
                 foreach (var ar in a.GetReferencedAssemblies())
                 {
                     var label = ar.Name;
-                    var found = FindAssembly(ar);
+                    var found = FindAssembly(dir, ar);
                     if (found != null)
                     {
                         loaded.Add(localFile);
@@ -121,7 +121,7 @@ namespace Microsoft.VisualStudio.GraphProviders
             return rc;
         }
 
-        private static string FindAssembly(AssemblyName name)
+        private static string FindAssembly(string possibleDirectory, AssemblyName name)
         {
             try
             {
@@ -130,6 +130,20 @@ namespace Microsoft.VisualStudio.GraphProviders
             } 
             catch (Exception)
             {
+                // try and resolve dependency using parent assembly folder.
+                string fullPath = Path.Combine(possibleDirectory, name.Name + ".dll");
+                if (File.Exists(fullPath))
+                {
+                    try
+                    {
+                        var a = Assembly.LoadFrom(fullPath);
+                        return new Uri(a.Location).LocalPath;
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
+                }
                 return null;
             }
         }
