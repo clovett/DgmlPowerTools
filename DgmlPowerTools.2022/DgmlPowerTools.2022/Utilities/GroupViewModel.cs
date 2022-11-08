@@ -68,6 +68,20 @@ namespace LovettSoftware.DgmlPowerTools
 
         internal void ApplyGroups()
         {
+            int leaves = 0;
+            foreach (GraphNode node in graph.Nodes)
+            {
+                string label = node.Label;
+                if (!node.IsGroup)
+                {
+                    leaves++;
+                }
+            }
+            if (leaves == 0)
+            {
+                throw new Exception("Your graph only contains groups right now, so this tool will do nothing, you can convert all the groups to leaf nodes using the context menu/Gropp/Convert to leaf.");
+            }
+
             using (GraphTransactionScope scope = new UndoableGraphTransactionScope(UndoOption.Disable))
             {
                 CreateGroups();

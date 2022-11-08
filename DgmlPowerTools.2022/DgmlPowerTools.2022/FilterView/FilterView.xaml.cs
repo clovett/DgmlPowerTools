@@ -176,14 +176,20 @@ namespace LovettSoftware.DgmlPowerTools
             {
                 return;
             }
-
-            viewModel.ApplyGroups();
-
-            // force full layout since it looks prettier that way.
-            GraphControl control = this.graphControl;
-            if (control != null && control.Diagram != null)
+            try
             {
-                control.Diagram.RedoLayout();
+                viewModel.ApplyGroups();
+
+                // force full layout since it looks prettier that way.
+                GraphControl control = this.graphControl;
+                if (control != null && control.Diagram != null)
+                {
+                    control.Diagram.RedoLayout();
+                }
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Exclamation);
             }
 
         }
