@@ -92,6 +92,8 @@ The following is the result when you apply this grouping information (see [group
 
 ## **Change History**
 
+2.0.11 Add some project type specific icons for cpp, cs, vb, and web project types.
+
 2.0.10 Some nice improvements to package dependencies  from 'zplan'.
 
 2.0.9 Add nuget package dependencies to project dependencies diagram (special thanks to PR from 'zplan').  Also added new "Add Dependent Assemblies" menu item on context menu.

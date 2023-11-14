@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.GraphProviders;
 using Microsoft.VisualStudio.ComponentModelHost;
 using System.ComponentModel.Composition.Hosting;
+using LovettSoftware.DgmlPowerTools.Utilities;
 
 namespace LovettSoftware.DgmlPowerTools
 {
@@ -204,12 +205,10 @@ namespace LovettSoftware.DgmlPowerTools
             try
             {
                 IVsSolution solution = GetService<SVsSolution, IVsSolution>();
-                ProjectDependencies generator = (ProjectDependencies)this.serviceProvider.GetService(typeof(SProjectDependencies));
-                Graph result = generator.GetProjectDependencies(solution);
-
                 string resultPath = System.IO.Path.GetTempPath();
                 resultPath = System.IO.Path.Combine(resultPath, "projects.dgml");
 
+                Graph result = new Graph();
                 result.Save(resultPath);
                 result = null;
 
@@ -217,9 +216,19 @@ namespace LovettSoftware.DgmlPowerTools
                 IVsWindowPane pane = ShellHelpers.GetActiveDocumentWindowPane(serviceProvider);
                 if (pane != null)
                 {
-                    IGraphDocumentWindowPane graphWindow = (IGraphDocumentWindowPane)pane;
-                    Graph resultGraph = graphWindow.Graph;
-                    // todo: check the graph is correct!
+                    var control = ((WindowPane)pane).Content as GraphControl;
+                    Graph resultGraph = control.Graph;
+                    var categoies = new ProjectCategories(control.IconService);
+                    using (var scope = new UndoableGraphTransactionScope("Add Project Dependencies"))
+                    {
+                        ProjectDependencies generator = (ProjectDependencies)this.serviceProvider.GetService(typeof(SProjectDependencies));
+                        generator.GetProjectDependencies(resultGraph, solution);
+                        scope.Complete();
+                    }
+                    if (control.Diagram != null)
+                    {
+                        control.Diagram.RedoLayout();
+                    }
                 }
             }
             catch (Exception ex)
@@ -965,6 +974,5 @@ namespace LovettSoftware.DgmlPowerTools
         }
 
         #endregion
-
     }
 }

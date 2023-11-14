@@ -7,9 +7,12 @@ using Microsoft.Build.Construction;
 using System.IO;
 using System.Xml.Linq;
 using Microsoft.VisualStudio.GraphModel.Schemas;
+using System.Windows.Media.Imaging;
 
 namespace Microsoft.VisualStudio.GraphProviders
 {
+    
+
     [Export(typeof(IGraphDependencyProvider))]
     class MsbuildProvider : IGraphDependencyProvider
     {

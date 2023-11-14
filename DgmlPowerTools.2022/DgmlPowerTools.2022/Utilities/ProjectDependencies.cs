@@ -15,6 +15,7 @@ using CodeNodeProperties = Microsoft.VisualStudio.Progression.CodeSchema.Propert
 using System.Diagnostics;
 using System.Windows.Media;
 using Microsoft.VisualStudio.Shell.Flavor;
+using Microsoft.Build.Framework.XamlTypes;
 
 namespace LovettSoftware.DgmlPowerTools
 {
@@ -24,7 +25,7 @@ namespace LovettSoftware.DgmlPowerTools
 
     public interface IProjectDependencies
     {
-        Graph GetProjectDependencies(IVsSolution solution);
+        Graph GetProjectDependencies(Graph graph, IVsSolution solution);
     }
 
     class ProjectDependencies : SProjectDependencies, IProjectDependencies
@@ -33,12 +34,29 @@ namespace LovettSoftware.DgmlPowerTools
         private const string PackageReferenceCategory = "DgmlPowerTool_PackageReference";
 
         private Dictionary<string, GraphCategory> _categories = new Dictionary<string, GraphCategory>();
-        private Dictionary<string, GraphConditionalStyle> _projectStyles;        
+        private Dictionary<string, GraphConditionalStyle> _projectStyles;   
+        
+        static string GetProjectKind(IVsSolution solution, Project project)
+        {
+            string id = project.UniqueName;
+            string kind = project.Kind;
+            IVsHierarchy hierarchy;
+            solution.GetProjectOfUniqueName(id, out hierarchy);
+            IVsAggregatableProjectCorrected ap = hierarchy as IVsAggregatableProjectCorrected;
+            if (ap != null)
+            {
+                if (ap.GetAggregateProjectTypeGuids(out string guids) == 0)
+                {
+                    kind = guids;
+                }
+            }
+            return kind;
+        }
 
-        public Graph GetProjectDependencies(IVsSolution solution)
+        public Graph GetProjectDependencies(Graph graph, IVsSolution solution)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            var graph = new Graph();
+
             _categories = new Dictionary<string, GraphCategory>();
             _projectStyles = new Dictionary<string, GraphConditionalStyle>();
 
@@ -52,7 +70,7 @@ namespace LovettSoftware.DgmlPowerTools
                 // create package reference category with its style
                 var category = custom.RegisterNodeCategory(PackageReferenceCategory, "Package Reference", "PackagesReferences", false);
                 _categories.Add(PackageReferenceCategory, category);
-                AddCategoryStyle(graph, category, "#FF094167", "CodeSchema_Assembly");
+                AddCategoryStyle(graph, category.Id, "#FF094167", "CodeSchema_Assembly");
 
                 GraphProperty versionProperty = CodeGraphSchema.Schema.Properties.AddNewProperty(PropNameNugetVersion, typeof(string),
                     () => {
@@ -72,20 +90,9 @@ namespace LovettSoftware.DgmlPowerTools
                     {
                         string label = sourceProject.Name;
                         string id = sourceProject.UniqueName;
-                        string kind = sourceProject.Kind;
-                        IVsHierarchy hierarchy;
-                        solution.GetProjectOfUniqueName(id, out hierarchy);
-                        IVsAggregatableProjectCorrected ap = hierarchy as IVsAggregatableProjectCorrected;
-                        if (ap != null)
-                        {
-                            if (ap.GetAggregateProjectTypeGuids(out string guids) == 0)
-                            {
-                                kind = guids;
-                            }
-                        }
-
-                        Debug.WriteLine($"{label} = {kind}");
-                        GraphCategory projectCategory = GetOrCreateProjectCategoryStyle(graph, custom, kind);
+                        string fileName = sourceProject.FileName;
+                        string kind = GetProjectKind(solution, sourceProject);
+                        GraphCategory projectCategory = GetOrCreateProjectCategoryStyle(graph, kind, fileName);
                         GraphNode sourceProjectNode = graph.Nodes.GetOrCreate(id, label, projectCategory);
 
                         CreateNugetReferences(sourceProject.FullName, graph, custom, sourceProjectNode, versionProperty);
@@ -97,10 +104,11 @@ namespace LovettSoftware.DgmlPowerTools
                             {
                                 string targetLabel = targetProject.Name;
                                 string targetId = targetProject.UniqueName;
-                                string targetKind = sourceProject.Kind;
+                                string targetFileName = targetProject.FileName;
+                                string targetKind = GetProjectKind(solution, targetProject);
                                 if (targetId != id)
                                 {
-                                    GraphCategory targetProjectCategory = GetOrCreateProjectCategoryStyle(graph, custom, targetKind);
+                                    GraphCategory targetProjectCategory = GetOrCreateProjectCategoryStyle(graph, targetKind, targetFileName);
                                     GraphNode target = graph.Nodes.GetOrCreate(targetId, targetLabel, targetProjectCategory);
                                     graph.Links.GetOrCreate(sourceProjectNode, target);
                                 }
@@ -135,21 +143,7 @@ namespace LovettSoftware.DgmlPowerTools
                 case "{82B43B9B-A64C-4715-B499-D71E9CA2BD60}":
                     return "CodeMap_VsixProject";
                 default:
-                    return "CodeSchema_Project";
-            }
-        }
-
-        static string GetKnownProjectIcon(string category)
-        {
-            switch (category)
-            {
-                case "CodeMap_WindowsPackage":
-                case "CodeMap_WindowsProject":
-                    return "CodeMap_WpfProject";
-                case "CodeMap_WixPackage":
-                    return "CodeSchema_Project";
-                default:
-                    return category;
+                    return null;
             }
         }
 
@@ -162,33 +156,61 @@ namespace LovettSoftware.DgmlPowerTools
             }
         }
 
-        GraphCategory GetOrCreateProjectCategoryStyle(Graph graph, GraphSchema schema, string kind)
+        GraphCategory GetOrCreateProjectCategoryStyle(Graph graph, string kind, string fileName)
         {
-            string categoryName = "CodeSchema_Project";
-            foreach (var guid in kind.Split(';'))
+            GraphCategory category = null;
+            string categoryId = GetKnownProjectCategory(kind);
+            if (!string.IsNullOrEmpty(categoryId))
             {
-                categoryName = GetKnownProjectCategory(guid.ToUpperInvariant());
-                if (categoryName != "CodeMap_Project")
+                _categories.TryGetValue(categoryId, out category);
+                if (category == null)
                 {
-                    break;
+                    string label = categoryId.Split('_')[1];
+                    category = graph.DocumentSchema.RegisterNodeCategory(categoryId, label, label + " Category", false, null);
+                    _categories[categoryId] = category;
                 }
             }
-
-            _categories.TryGetValue(categoryName, out GraphCategory category);
-            if (category == null)
+            else
             {
-                string label = categoryName.Split('_')[1];
-                category = schema.RegisterNodeCategory(categoryName, label, label + " Category", false, null);
-                _categories[categoryName] = category;
+                string ext = System.IO.Path.GetExtension(fileName).ToLowerInvariant();
+
+                switch (ext)
+                {
+                    case ".csproj":
+                        categoryId = "CsProject";
+                        break;
+                    case ".vbproj":
+                        categoryId = "VbProject";
+                        break;
+                    case ".vcproj":
+                    case ".vcxproj":
+                        categoryId = "CppProject";
+                        break;
+                    case ".shproj":
+                        categoryId = "SharingProject";
+                        break;
+                    case ".publishproj":
+                        categoryId = "WebProject";
+                        break;
+                    case ".stvproj":
+                        categoryId = "TraceProject";
+                        break;
+                    case ".sln":
+                        categoryId = "Solution";
+                        break;
+                    default:
+                        categoryId = "CodeSchema_Project";
+                        break;
+                }
+                category = graph.DocumentSchema.FindCategory(categoryId);
             }
 
             // make sure this graph has the style
-            if (!_projectStyles.TryGetValue(categoryName, out GraphConditionalStyle style))
+            if (!_projectStyles.TryGetValue(categoryId, out GraphConditionalStyle style))
             {
-                var color = GetKnownProjectColors(categoryName);
-                var icon = GetKnownProjectIcon(categoryName);
-                style = AddCategoryStyle(graph, category, color, icon);
-                _projectStyles[categoryName] = style;
+                var color = GetKnownProjectColors(categoryId);
+                style = AddCategoryStyle(graph, categoryId, color);
+                _projectStyles[categoryId] = style;
             }
 
             return category;
@@ -208,24 +230,24 @@ namespace LovettSoftware.DgmlPowerTools
             // make sure this graph has the style
             if (!_projectStyles.TryGetValue(categoryName, out GraphConditionalStyle style))
             {
-                style = AddCategoryStyle(graph, category, stroke:"red", strokeThickness:1);
+                style = AddCategoryStyle(graph, categoryName, stroke:"red", strokeThickness:1);
                 _projectStyles[categoryName] = style;
             }
 
             return category;
         }
 
-        private static GraphConditionalStyle AddCategoryStyle(Graph graph, GraphCategory category, string backgroundColor = null, string icon = null, string stroke = null, double? strokeThickness = null)
+        private static GraphConditionalStyle AddCategoryStyle(Graph graph, string categoryId, string backgroundColor = null, string icon = null, string stroke = null, double? strokeThickness = null)
         {
             var style = new GraphConditionalStyle(graph)
             {
                  TargetType = typeof(GraphNode),
-                 GroupLabel = category.GetLabelOrId(graph),
+                 GroupLabel = categoryId,
                  ValueLabel = "Has category",
             };
             style.Conditions.Add(new GraphCondition(style)
             {
-                Expression = $"HasCategory('{category.Id}')"
+                Expression = $"HasCategory('{categoryId}')"
             });
 
             if (!string.IsNullOrEmpty(backgroundColor))
