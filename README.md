@@ -97,7 +97,7 @@ The following is the result when you apply this grouping information (see [group
 
 Go to the Visual Studio Installer, Individual Components and make sure DGML editor is "checked":
 
-![Visual Studio Installer](Artwork\InstallDgmlEditor.png)
+![Visual Studio Installer](Artwork/InstallDgmlEditor.png)
 
 ## **Change History**
 
