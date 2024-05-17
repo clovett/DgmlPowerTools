@@ -21,11 +21,14 @@ This handy command can be found under the VS Project menu and will produce a DGM
 
 Notice that it highlights in red any package dependency version conflicts.
 
+> Note: If you do not see the DGML editor in Visual Studio then make sure you have the DGML editor installed.
+See [Install DGML Editor](#install-dgml-editor).
+
 ## **Add Dependent Assemblies**
 
 If you drop a random .dll onto a new Directed Graph Document, you can now expand all it's dependent assemblies using this new context menu item:
 
-![image.png](Artwork/dependents.png)
+![image.png](#dgml-autogrouping)
 
 ## Save as SVG
 
@@ -89,6 +92,12 @@ A new tool window that allows you to provide auto-grouping information.  If you
 The following is the result when you apply this grouping information (see [grouppatterns.xml](http://www.lovettsoftware.com/dgml/demos/.net4.0/grouppatterns.xml) )) :
 
 ![grouped.png](Artwork/grouped.png)
+
+## Install DGML Editor
+
+Go to the Visual Studio Installer, Individual Components and make sure DGML editor is "checked":
+
+![Visual Studio Installer](Artwork\InstallDgmlEditor.png)
 
 ## **Change History**
 
