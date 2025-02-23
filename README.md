@@ -1,12 +1,12 @@
 # DgmlPowerTools
 
-DGML Power Tools is a VSIX package for Visual Studio 2019 that adds a bunch of handy new DGML related features, including neighborhood and butterfly modes, export to SVG, Drag/Drop of images, Graph Diff, and auto grouping.
+DGML Power Tools is a VSIX package for Visual Studio 2022 that adds a bunch of handy new DGML related features, including neighborhood and butterfly modes, export to SVG, Drag/Drop of images, Graph Diff, and auto grouping.
 
 See [demo video](https://lovettsoftwarestorage.blob.core.windows.net/videos/DGMLPowerTools.mp4)
 
 # Nuget Package
 
-See [DgmlPowerTools Nuget package ](https://marketplace.visualstudio.com/items?itemName=ChrisLovett.DgmlPowerTools2019).
+See [DgmlPowerTools Nuget package](https://marketplace.visualstudio.com/items?itemName=ChrisLovett.DgmlPowerTools2022).
 
 # Source Code
 
@@ -100,6 +100,8 @@ Go to the Visual Studio Installer, Individual Components and make sure DGML edit
 ![Visual Studio Installer](Artwork/InstallDgmlEditor.png)
 
 ## **Change History**
+
+2.0.12 Add ARM64 support on VS 2022.
 
 2.0.11 Add some project type specific icons for cpp, cs, vb, and web project types.
 

@@ -138,7 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.31902.203" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.1.4054" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.13.2126" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\CloseBox.xaml">
