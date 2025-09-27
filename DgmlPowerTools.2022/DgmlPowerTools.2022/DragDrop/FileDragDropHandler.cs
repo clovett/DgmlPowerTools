@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -20,17 +21,12 @@ namespace LovettSoftware.DgmlPowerTools
     [Export(typeof(IGraphDropHandler))]
     public sealed class FileDragDropHandler : IGraphDropHandler
     {
-        string[] formats = new string[] { "FileDrop", "FileNameW" };
+        string[] formats = new string[] { "FileDrop", "FileNameW", "CF_VSREFPROJECTS" };
 
         public FileDragDropHandler()
         {
             // this MEF load point is our cue to load the package since ProvideAutoLoad doesn't seem to work any more.
             VSPackage.AutoLoad();
-        }
-
-        bool CanReceive(IDataObject data)
-        {
-            return GetFilesDropped(data).Any();
         }
 
         GraphNodeIdName FileNameId = GraphNodeIdName.Get("FileName", "FileName", typeof(Uri));
@@ -42,7 +38,8 @@ namespace LovettSoftware.DgmlPowerTools
         {
             if (CanReceive(args.Data))
             {
-                args.Effects |= DragDropEffects.Link;
+                args.Effects = DragDropEffects.Move;
+                args.Handled = true;
                 return true;
             }
             return false;
@@ -72,16 +69,60 @@ namespace LovettSoftware.DgmlPowerTools
             get { return 10; }
         }
 
+        bool CanReceive(IDataObject data)
+        {
+            foreach (string format in formats)
+            {
+                if (data.GetDataPresent(format))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         IEnumerable<string> GetFilesDropped(IDataObject data)
         {
             foreach (string format in formats)
             {
                 if (data.GetDataPresent(format))
                 {
-                    string[] list = data.GetData(format) as string[];
-                    if (list != null)
+                    var obj = data.GetData(format);
+                    if (obj is MemoryStream)
                     {
-                        foreach (string file in list)
+                        // special case for CF_VSREFPROJECTS
+                        MemoryStream ms = obj as MemoryStream;
+                        String str = Encoding.Unicode.GetString(ms.ToArray());
+                        var parts = str.Split(new char[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
+                        // The first 2 fields are numeric info \u0014 (type?) and \u0001 (count).
+                        for (int i = 2; i < parts.Length; i++)
+                        {
+                            var project = parts[i];
+                            var names = project.Split('|'); // guid, project relative path, solution dir
+                            if (names.Length > 2)
+                            {
+                                var projectDir = names[2];
+                                if (System.IO.File.Exists(projectDir))
+                                {
+                                    // C++ projects provide full path!
+                                    yield return projectDir;
+                                }
+                                else
+                                {
+                                    var fileName = System.IO.Path.GetFileName(names[1]);
+                                    var file = System.IO.Path.Combine(projectDir, fileName);
+                                    yield return file;
+                                }
+                            }
+                        }
+                    }
+                    else if (obj is string)
+                    {
+                        yield return obj as string;
+                    }
+                    else if (obj is string[])
+                    {
+                        foreach (string file in obj as string[])
                         {
                             yield return file;
                         }
@@ -158,6 +199,7 @@ namespace LovettSoftware.DgmlPowerTools
                         string.Compare(extension, ".dll", StringComparison.OrdinalIgnoreCase) == 0 ||
                         string.Compare(extension, ".csproj", StringComparison.OrdinalIgnoreCase) == 0 ||
                         string.Compare(extension, ".vbproj", StringComparison.OrdinalIgnoreCase) == 0 ||
+                        string.Compare(extension, ".vcxproj", StringComparison.OrdinalIgnoreCase) == 0 ||
                         string.Compare(extension, ".proj", StringComparison.OrdinalIgnoreCase) == 0 ||
                         string.Compare(extension, ".sln", StringComparison.OrdinalIgnoreCase) == 0)
                     {

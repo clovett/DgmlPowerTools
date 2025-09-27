@@ -312,6 +312,30 @@ namespace LovettSoftware.DgmlPowerTools
             DefineCommandHandler(new EventHandler(this.ButterflyMode_InvokeHandler), null,
                 new EventHandler(this.ButterflyMode_BeforeQueryStatus), commandId, null);
 
+            FixGraphDragDropGesture();
+        }
+
+        void FixGraphDragDropGesture()
+        {
+            // We need to reorder the drag/drop handlers to fix a bug in drag/drop of files onto the graph.
+            GraphControl control = this.GraphControl;
+            var gdd = control.GetType().GetField("_gdd", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            if (gdd == null) return;
+            var gesture = gdd.GetValue(control) as GraphDragDropGesture;
+            if (gesture == null) return;
+            var handlers = gesture.GetType().GetField("_handlers", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            if (handlers == null) return;
+            var list = handlers.GetValue(gesture) as IEnumerable<IGraphDropHandler>;
+            if (list == null) return;
+            var newList = new List<IGraphDropHandler>(list);
+            var fileHandler = newList.FirstOrDefault((h) => h is FileDragDropHandler);
+            if (fileHandler != null)
+            {
+                // Make it the first handler so that HandlerExists works properly.
+                newList.Remove(fileHandler);
+                newList.Insert(0, fileHandler);
+                handlers.SetValue(gesture, newList);
+            }
         }
 
         void OnNeighborhoodChanged(object sender, EventArgs e)
@@ -789,9 +813,8 @@ namespace LovettSoftware.DgmlPowerTools
         }
         Graph GetUserDiffTemplate()
         {
-            var manager = new Microsoft.VisualStudio.Shell.Settings.ShellSettingsManager(serviceProvider);
-            var documents = manager.GetApplicationDataFolder(ApplicationDataFolder.Documents);
-            string path = System.IO.Path.Combine(documents, "DgmlPowerTools");
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string path = System.IO.Path.Combine(appData, "Visual Studio 2022", "DgmlPowerTools");
             if (!System.IO.Directory.Exists(path))
             {
                 System.IO.Directory.CreateDirectory(path);
